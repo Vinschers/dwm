@@ -12,5 +12,8 @@ cd ../st
 cp config.def.h config.h
 make clean install
 
+sudo pacman -S --needed picom nitrogen
+
 cd ../
+cp ~/.xinitrc xinitrc.old
 cp xinitrc ~/.xinitrc
