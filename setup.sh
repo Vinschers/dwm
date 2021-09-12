@@ -12,7 +12,8 @@ cd ../st
 cp config.def.h config.h
 make clean install
 
-sudo pacman -S --needed picom nitrogen
+cd ../dwmblocks
+make clean install
 
 cd ../
 cp ~/.xinitrc xinitrc.old
