@@ -1,10 +1,17 @@
 #!/bin/sh
 
+cd dwm-flexipatch
+cp config.def.h config.h
+make clean install
+rm config.h
+rm patches.h
+
+cd ..
+./flexipatch-finalizer.sh -r -d ./dwm-flexipatch -o ./dwm
 cd dwm
 cp config.def.h config.h
 make clean install
 rm config.h
-[ -f patches.h ] && rm patches.h
 
 cd ../dmenu
 cp config.def.h config.h
