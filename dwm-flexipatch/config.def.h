@@ -107,7 +107,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=10", "JoyPixels:pixelsize=12" };
+static const char *fonts[]               = { "monospace:size=11", "JoyPixels:pixelsize=15" };
 #endif // BAR_PANGO_PATCH
 static const char dmenufont[]            = "monospace:size=10";
 
@@ -1182,7 +1182,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Escape,     mpdcontrol,             {0} },
 	#endif // MPDCONTROL_PATCH
 	{ ShiftMask,                    XK_PRT_SCR,     spawn,         		SHCMD("flameshot gui") },
-	{ MODKEY|ShiftMask,		XK_e,		spawn,			SHCMD("$SCRIPTS_DIR/utils/dmenuemojis") },
+	{ MODKEY|ShiftMask,		XK_e,		spawn,			SHCMD("dmenuselector emojis") },
+	{ MODKEY|ShiftMask,		XK_m,		spawn,			SHCMD("dmenuselector math") },
+	{ MODKEY|ShiftMask,		XK_p,		spawn,			SHCMD("simple-scan") },
+	{ MODKEY|ShiftMask,		XK_b,		spawn,			SHCMD("chromium") },
 	TAGKEYS(                        XK_1,                                  0)
 	TAGKEYS(                        XK_2,                                  1)
 	TAGKEYS(                        XK_3,                                  2)

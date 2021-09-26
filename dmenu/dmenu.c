@@ -113,6 +113,27 @@ cistrstr(const char *s, const char *sub)
 	return NULL;
 }
 
+static char *
+startstrstr(const char *s, const char *sub)
+{
+	size_t len;
+	unsigned char insideWord = 0; // works as boolean
+
+	for (len = strlen(sub); *s; s++) {
+		if (*s == ' ') {
+			insideWord = 0;
+			continue;
+		}
+
+		if (!insideWord && !strncasecmp(s, sub, len))
+			return (char *)s;
+
+		insideWord = 1;
+	}
+
+	return NULL;
+}
+
 static int
 drawitem(struct item *item, int x, int y, int w)
 {
@@ -712,7 +733,9 @@ main(int argc, char *argv[])
 		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
 			fstrncmp = strncasecmp;
 			fstrstr = cistrstr;
-		} else if (i + 1 == argc)
+		} else if (!strcmp(argv[i], "-s"))
+			fstrstr = startstrstr;
+		else if (i + 1 == argc)
 			usage();
 		/* these options take one argument */
 		else if (!strcmp(argv[i], "-l"))   /* number of lines in vertical list */
