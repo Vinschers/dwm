@@ -1186,6 +1186,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_m,		spawn,			SHCMD("dmenuselector math") },
 	{ MODKEY|ShiftMask,		XK_p,		spawn,			SHCMD("simple-scan") },
 	{ MODKEY|ShiftMask,		XK_b,		spawn,			SHCMD("chromium") },
+	{ MODKEY|ShiftMask,		XK_l,		spawn,			SHCMD("latex2img") },
 	TAGKEYS(                        XK_1,                                  0)
 	TAGKEYS(                        XK_2,                                  1)
 	TAGKEYS(                        XK_3,                                  2)
