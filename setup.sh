@@ -14,17 +14,13 @@ compile () {
 	cd ..
 }
 
-# compile "dwm-flexipatch" "config.h patches.h"
-# ./flexipatch-finalizer.sh -r -d ./dwm-flexipatch -o ./dwm
-# compile "dwm" "config.h"
-
 compile "dwm-multi" "config.h"
 
-# compile "dmenu" "config.h"
+compile "dmenu" "config.h"
 
-# compile "st" "config.h"
+compile "st" "config.h"
 
-# compile "dwmblocks" "blocks.h"
+compile "dwmblocks" "blocks.h"
 
 cp ~/.xinitrc xinitrc.old
 cp xinitrc ~/.xinitrc
