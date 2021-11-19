@@ -45,7 +45,6 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define MODKEY Mod1Mask
 #define XK_PRT_SCR 0x0000ff61
 
 #define TAGKEYS(KEY,TAG) \

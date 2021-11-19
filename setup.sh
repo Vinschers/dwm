@@ -20,11 +20,11 @@ compile () {
 
 compile "dwm-multi" "config.h"
 
-compile "dmenu" "config.h"
+# compile "dmenu" "config.h"
 
-compile "st" "config.h"
+# compile "st" "config.h"
 
-compile "dwmblocks" "blocks.h"
+# compile "dwmblocks" "blocks.h"
 
 cp ~/.xinitrc xinitrc.old
 cp xinitrc ~/.xinitrc
