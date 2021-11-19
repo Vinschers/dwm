@@ -1,38 +1,30 @@
 #!/bin/sh
 
-cd dwm-flexipatch
-cp config.def.h config.h
-make clean install
-make clean
-rm config.h
-rm patches.h
+compile () {
+	cd "$1"
+	
+	for f in *.def.h; do 
+	    cp -- "$f" "${f%.def.h}.h"
+	done
 
-cd ..
-./flexipatch-finalizer.sh -r -d ./dwm-flexipatch -o ./dwm
-cd dwm
-cp config.def.h config.h
-make clean install
-make clean
-rm config.h
+	make clean install
+	make clean
+	rm "$2"
 
-cd ../dmenu
-cp config.def.h config.h
-make clean install
-make clean
-rm config.h
+	cd ..
+}
 
-cd ../st
-cp config.def.h config.h
-make clean install
-make clean
-rm config.h
+# compile "dwm-flexipatch" "config.h patches.h"
+# ./flexipatch-finalizer.sh -r -d ./dwm-flexipatch -o ./dwm
+# compile "dwm" "config.h"
 
-cd ../dwmblocks
-cp blocks.def.h blocks.h
-make clean install
-make clean
-rm blocks.h
+compile "dwm-multi" "config.h"
 
-cd ../
+compile "dmenu" "config.h"
+
+compile "st" "config.h"
+
+compile "dwmblocks" "blocks.h"
+
 cp ~/.xinitrc xinitrc.old
 cp xinitrc ~/.xinitrc
