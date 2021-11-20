@@ -56,7 +56,6 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask
-#define XK_PRT_SCR 0x0000ff61
 
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -100,12 +99,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_PRT_SCR,spawn,          SHCMD("flameshot gui") },
+	{ MODKEY|ShiftMask,             XK_Print,  spawn,          SHCMD("flameshot gui") },
 	{ MODKEY|ShiftMask,             XK_e,      spawn,          SHCMD("dmenuselector emojis") },
 	{ MODKEY|ShiftMask,             XK_m,      spawn,          SHCMD("dmenuselector math") },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,          SHCMD("simple-scan") },
 	{ MODKEY|ShiftMask,             XK_b,      spawn,          SHCMD("xdg-open https://searx.be") },
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("latex2img") },
+	{ MODKEY|ShiftMask,             XK_equal,  spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+2 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_minus,  spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+2 dwmblocks") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
