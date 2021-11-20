@@ -11,6 +11,7 @@ static char *font2[] = {
 	"Braille:pixelsize=10:antialias=true:autohint=true",
 	"JoyPixels:pixelsize=10:antialias=true:autohint=true",
 	"Noto Color Emoji:pixelsize=11:antialias=true:autohint=true",
+	"SourceHanMono:pixelsize=10:antialias=true:autohint=true",
 	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true",
 	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true",
 };
@@ -215,7 +216,7 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
-	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
+	{ ControlMask,          XK_v,           clippaste,      {.i =  0} },
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
