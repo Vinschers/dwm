@@ -12,7 +12,7 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSIZE 16 /* icon size */
 #define ICONSPACING 5 /* space between icon and title */
-static const char *fonts[]          = { "monospace:size=11", "JoyPixels:pixelsize=15" };
+static const char *fonts[]          = { "monospace:size=11", "JoyPixels:pixelsize=15", "Noto Color Emoji:pixelsize=15" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -25,6 +25,9 @@ static const char *colors[][3]      = {
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_sel_bar,  col_sel_border  },
 };
+
+/* staticstatus */
+static const int statmonval = 1;
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
