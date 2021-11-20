@@ -22,5 +22,4 @@ compile "st" "config.h"
 
 compile "dwmblocks" "blocks.h"
 
-cp ~/.xinitrc xinitrc.old
 cp xinitrc ~/.xinitrc
