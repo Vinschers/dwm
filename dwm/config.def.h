@@ -105,8 +105,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,          SHCMD("simple-scan") },
 	{ MODKEY|ShiftMask,             XK_b,      			spawn,          SHCMD("xdg-open https://searx.be") },
 	{ MODKEY|ShiftMask,             XK_l,      			spawn,          SHCMD("latex2img") },
-	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && kill -44 $(pidof dwmblocks)") },
-	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && kill -44 $(pidof dwmblocks)") },
+	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+2 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+2 dwmblocks") },
 	TAGKEYS(                        XK_1,                      			0)
 	TAGKEYS(                        XK_2,                      			1)
 	TAGKEYS(                        XK_3,                      			2)
