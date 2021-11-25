@@ -8,6 +8,8 @@
 static char *font = "Source Code Pro:pixelsize=20:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
+	"fontawesome:style=Solid:pixelsize=12:antialias=true:autohint=true",
+	"fontawesomebrands:style=Solid:pixelsize=12:antialias=true:autohint=true",
 	"Braille:pixelsize=10:antialias=true:autohint=true",
 	"JoyPixels:pixelsize=10:antialias=true:autohint=true",
 	"Noto Color Emoji:pixelsize=11:antialias=true:autohint=true",
