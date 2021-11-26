@@ -3,11 +3,11 @@
 /* appearance */
 static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
-static const unsigned int systraypinning = 1;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systraypinning = 2;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0;   	/* 0: systray in the right corner, >0: systray on left of status text */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
-static const int showsystray        = 1;     /* 0 means no systray */
+static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSIZE 16 /* icon size */
@@ -29,8 +29,14 @@ static const char *colors[][3]      = {
 /* staticstatus */
 static const int statmonval = 1;
 
-/* tagging */
-static const char *tags[] = { "", "", "3", "4", "5", "6", "7", "8", "" };
+/* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
+static const char *tags[NUMTAGS] = { NULL };  /* left for compatibility reasons, i.e. code that checks LENGTH(tags) */
+static char *tagicons[][NUMTAGS*2] = {
+	[IconsDefault]               = { "" },
+	[IconsVacant]                = { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
+	[IconsOccupiedDefault]       = { "", "", "", "", "<5>", "<6>", "<7>", "<8>", "<9>" },
+	[IconsOccupiedDualMonitor]   = { "", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
+};
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -100,6 +106,8 @@ static Key keys[] = {
 	{ ALTKEY,                       XK_k, 				focusmon,       {.i = +1 } },
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
 	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,         {.i = +1 } },
+//	{ MODKEY|ShiftMask,             XK_a,      		        seticonset,     {.i = 0 } },
+//	{ MODKEY|ShiftMask,             XK_b,      			seticonset,     {.i = 0 } },
 	{ ShiftMask,             	XK_Print,  			spawn,          SHCMD("flameshot gui") },
 	{ MODKEY|ShiftMask,             XK_e,      			spawn,          SHCMD("dmenuselector emojis") },
 	{ MODKEY|ShiftMask,             XK_m,      			spawn,          SHCMD("dmenuselector math") },
@@ -137,4 +145,6 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkTagBar,            0,              Button4,        cycleiconset,   {.i = +1 } },
+	{ ClkTagBar,            0,              Button5,        cycleiconset,   {.i = -1 } },
 };
