@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -13,8 +15,8 @@ static const int scalepreview       = 4;        /* tag preview scaling */
 static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSIZE 16
 #define ICONSPACING 5
-static const int vertpad            = 0;       /* vertical padding of bar */
-static const int sidepad            = 0;       /* horizontal padding of bar */
+static const int vertpad            = 10;       /* vertical padding of bar */
+static const int sidepad            = 10;       /* horizontal padding of bar */
 static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:pixelsize=15", "Noto Color Emoji:pixelsize=15" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
@@ -143,7 +145,7 @@ static Key keys[] = {
 	{ ALTKEY,                       XK_k, 				focusmon,       {.i = +1 } },
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
 	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,         {.i = +1 } },
-	{ ShiftMask,             		XK_Print,  			spawn,          SHCMD("flameshot gui") },
+	{ ShiftMask,           		XK_Print,  			spawn,          SHCMD("flameshot gui") },
 	{ MODKEY|ShiftMask,             XK_e,      			spawn,          SHCMD("dmenuselector emojis") },
 	{ MODKEY|ShiftMask,             XK_m,      			spawn,          SHCMD("dmenuselector math") },
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,          SHCMD("simple-scan") },
