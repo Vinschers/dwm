@@ -2,6 +2,7 @@
 
 /* appearance */
 static const unsigned int borderpx  = 4;        /* border pixel of windows */
+static const unsigned int gappx     = 5;        /* gap pixel between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 2;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0;   	/* 0: systray in the right corner, >0: systray on left of status text */
@@ -14,16 +15,15 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSPACING 5 /* space between icon and title */
 static const char *fonts[]          = { "monospace:size=11", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:pixelsize=15", "Noto Color Emoji:pixelsize=15" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_sel_bar[]     = "#DC143C";
-static const char col_sel_border[]  = "#DC143C";
+static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
+static const char col_gray2[]       = "#3B4252"; /* Unselected border */
+static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
+static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
+static const char col_cyan[]        = "#8F00FF";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_sel_bar,  col_sel_border  },
+	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 
 /* staticstatus */
@@ -34,8 +34,8 @@ static const char *tags[NUMTAGS] = { NULL };  /* left for compatibility reasons,
 static char *tagicons[][NUMTAGS*2] = {
 	[IconsDefault]               = { "" },
 	[IconsVacant]                = { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-	[IconsOccupiedDefault]       = { "", "", "", "", "<5>", "<6>", "<7>", "<8>", "<9>" },
-	[IconsOccupiedDualMonitor]   = { "", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
+	[IconsOccupiedDefault]       = { "", "", "", "", "", "<6>", "<7>", "", "" },
+	[IconsOccupiedDualMonitor]   = { "", "", "", "<3>", "", "<5>", "<7>", "<8>", "", "", "", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "" },
 };
 
 static const Rule rules[] = {
@@ -77,7 +77,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_sel_bar, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 static Key keys[] = {
