@@ -15,8 +15,8 @@ static const int scalepreview       = 4;        /* tag preview scaling */
 static const int topbar             = 1;        /* 0 means bottom bar */
 #define ICONSIZE 16
 #define ICONSPACING 5
-static const int vertpad            = 10;       /* vertical padding of bar */
-static const int sidepad            = 10;       /* horizontal padding of bar */
+static const int vertpad            = 12;       /* vertical padding of bar */
+static const int sidepad            = 12;       /* horizontal padding of bar */
 static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:pixelsize=15", "Noto Color Emoji:pixelsize=15" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
@@ -24,10 +24,18 @@ static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
 static const char col_cyan[]        = "#8F00FF";
+static const unsigned int baralpha  = 0xd0;
+static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+};
+static const unsigned int alphas[][3]	= {
+	/*               fg         bg         border   */
+	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha  },
+
 };
 
 /* staticstatus */
