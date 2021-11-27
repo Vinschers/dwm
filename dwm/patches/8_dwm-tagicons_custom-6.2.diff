@@ -1,19 +1,6 @@
-From 2e3edb3febae67c7325d1a1846934335403a62f4 Mon Sep 17 00:00:00 2001
-From: bakkeby <bakkeby@gmail.com>
-Date: Fri, 4 Dec 2020 12:32:40 +0100
-Subject: [PATCH] tagicons patch
-
-Refer to:
-https://github.com/bakkeby/patches/wiki/tagicons
----
- config.def.h | 13 +++++--
- dwm.c        | 98 ++++++++++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 99 insertions(+), 12 deletions(-)
-
-diff --git a/config.def.h b/config.def.h
-index 1c0b587..d82e4df 100644
---- a/config.def.h
-+++ b/config.def.h
+diff '--color=auto' -up dwm-6.2/config.def.h dwm-6.2-patch/config.def.h
+--- dwm-6.2/config.def.h	2019-02-02 10:55:28.000000000 -0200
++++ dwm-6.2-patch/config.def.h	2021-11-27 14:39:44.601911000 -0300
 @@ -18,8 +18,13 @@ static const char *colors[][3]      = {
  	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
  };
@@ -23,9 +10,9 @@ index 1c0b587..d82e4df 100644
 +/* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
 +static const char *tags[NUMTAGS] = { NULL };  /* left for compatibility reasons, i.e. code that checks LENGTH(tags) */
 +static char *tagicons[][NUMTAGS] = {
-+	[IconsDefault]        = { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-+	[IconsVacant]         = { NULL },
-+	[IconsOccupied]       = { NULL },
++	[IconsDefault]        		= { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
++	[IconsVacant]         		= { NULL },
++	[IconsOccupiedDefault]       	= { NULL },
 +};
  
  static const Rule rules[] = {
@@ -47,10 +34,9 @@ index 1c0b587..d82e4df 100644
 +	{ ClkTagBar,            0,              Button5,        cycleiconset,   {.i = -1 } },
  };
  
-diff --git a/dwm.c b/dwm.c
-index 4465af1..614a9ef 100644
---- a/dwm.c
-+++ b/dwm.c
+diff '--color=auto' -up dwm-6.2/dwm.c dwm-6.2-patch/dwm.c
+--- dwm-6.2/dwm.c	2019-02-02 10:55:28.000000000 -0200
++++ dwm-6.2-patch/dwm.c	2021-11-27 14:38:49.503078600 -0300
 @@ -45,6 +45,7 @@
  #include "util.h"
  
@@ -68,20 +54,21 @@ index 4465af1..614a9ef 100644
  #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
  
  /* enums */
-@@ -66,6 +67,12 @@ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+@@ -66,6 +67,13 @@ enum { NetSupported, NetWMName, NetWMSta
  enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
  enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
         ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 +enum {
 +	IconsDefault,
 +	IconsVacant,
-+	IconsOccupied,
++	IconsOccupiedDefault,
++	IconsOccupiedDualMonitor,
 +	IconsLast
 +}; /* icon sets */
  
  typedef union {
  	int i;
-@@ -124,6 +131,7 @@ struct Monitor {
+@@ -124,6 +132,7 @@ struct Monitor {
  	unsigned int tagset[2];
  	int showbar;
  	int topbar;
@@ -89,7 +76,7 @@ index 4465af1..614a9ef 100644
  	Client *clients;
  	Client *sel;
  	Client *stack;
-@@ -157,6 +165,7 @@ static void configure(Client *c);
+@@ -157,6 +166,7 @@ static void configure(Client *c);
  static void configurenotify(XEvent *e);
  static void configurerequest(XEvent *e);
  static Monitor *createmon(void);
@@ -97,7 +84,7 @@ index 4465af1..614a9ef 100644
  static void destroynotify(XEvent *e);
  static void detach(Client *c);
  static void detachstack(Client *c);
-@@ -169,6 +178,7 @@ static void focus(Client *c);
+@@ -169,6 +179,7 @@ static void focus(Client *c);
  static void focusin(XEvent *e);
  static void focusmon(const Arg *arg);
  static void focusstack(const Arg *arg);
@@ -105,7 +92,7 @@ index 4465af1..614a9ef 100644
  static int getrootptr(int *x, int *y);
  static long getstate(Window w);
  static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
-@@ -199,6 +209,7 @@ static void sendmon(Client *c, Monitor *m);
+@@ -199,6 +210,7 @@ static void sendmon(Client *c, Monitor *
  static void setclientstate(Client *c, long state);
  static void setfocus(Client *c);
  static void setfullscreen(Client *c, int fullscreen);
@@ -113,7 +100,7 @@ index 4465af1..614a9ef 100644
  static void setlayout(const Arg *arg);
  static void setmfact(const Arg *arg);
  static void setup(void);
-@@ -207,6 +218,7 @@ static void showhide(Client *c);
+@@ -207,6 +219,7 @@ static void showhide(Client *c);
  static void sigchld(int unused);
  static void spawn(const Arg *arg);
  static void tag(const Arg *arg);
@@ -121,7 +108,7 @@ index 4465af1..614a9ef 100644
  static void tagmon(const Arg *arg);
  static void tile(Monitor *);
  static void togglebar(const Arg *arg);
-@@ -272,7 +284,7 @@ static Window root, wmcheckwin;
+@@ -272,7 +285,7 @@ static Window root, wmcheckwin;
  #include "config.h"
  
  /* compile-time check if all tags fit into an unsigned int bit array. */
@@ -130,7 +117,7 @@ index 4465af1..614a9ef 100644
  
  /* function implementations */
  void
-@@ -416,7 +428,7 @@ attachstack(Client *c)
+@@ -416,7 +429,7 @@ attachstack(Client *c)
  void
  buttonpress(XEvent *e)
  {
@@ -139,7 +126,7 @@ index 4465af1..614a9ef 100644
  	Arg arg = {0};
  	Client *c;
  	Monitor *m;
-@@ -431,10 +443,13 @@ buttonpress(XEvent *e)
+@@ -431,10 +444,13 @@ buttonpress(XEvent *e)
  	}
  	if (ev->window == selmon->barwin) {
  		i = x = 0;
@@ -157,11 +144,10 @@ index 4465af1..614a9ef 100644
  			click = ClkTagBar;
  			arg.ui = 1 << i;
  		} else if (ev->x < x + blw)
-@@ -644,6 +659,24 @@ createmon(void)
- 	return m;
+@@ -645,6 +661,24 @@ createmon(void)
  }
  
-+void
+ void
 +cycleiconset(const Arg *arg)
 +{
 +	Monitor *m = selmon;
@@ -179,10 +165,11 @@ index 4465af1..614a9ef 100644
 +	drawbar(m);
 +}
 +
- void
++void
  destroynotify(XEvent *e)
  {
-@@ -699,6 +732,7 @@ drawbar(Monitor *m)
+ 	Client *c;
+@@ -699,6 +733,7 @@ drawbar(Monitor *m)
  	int boxs = drw->fonts->h / 9;
  	int boxw = drw->fonts->h / 6 + 2;
  	unsigned int i, occ = 0, urg = 0;
@@ -190,7 +177,7 @@ index 4465af1..614a9ef 100644
  	Client *c;
  
  	/* draw status first so it can be overdrawn by tags later */
-@@ -714,10 +748,13 @@ drawbar(Monitor *m)
+@@ -714,10 +749,13 @@ drawbar(Monitor *m)
  			urg |= c->tags;
  	}
  	x = 0;
@@ -207,7 +194,7 @@ index 4465af1..614a9ef 100644
  		if (occ & 1 << i)
  			drw_rect(drw, x + boxs, boxs, boxw, boxw,
  				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-@@ -871,6 +908,20 @@ getatomprop(Client *c, Atom prop)
+@@ -871,6 +909,20 @@ getatomprop(Client *c, Atom prop)
  	return atom;
  }
  
@@ -228,11 +215,10 @@ index 4465af1..614a9ef 100644
  int
  getrootptr(int *x, int *y)
  {
-@@ -1497,6 +1548,15 @@ setfullscreen(Client *c, int fullscreen)
- 	}
+@@ -1498,6 +1550,15 @@ setfullscreen(Client *c, int fullscreen)
  }
  
-+void
+ void
 +seticonset(const Arg *arg)
 +{
 +	if (arg->i >= 0 && arg->i < IconsLast) {
@@ -241,22 +227,40 @@ index 4465af1..614a9ef 100644
 +	}
 +}
 +
- void
++void
  setlayout(const Arg *arg)
  {
-@@ -1662,6 +1722,24 @@ tag(const Arg *arg)
+ 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
+@@ -1662,6 +1723,41 @@ tag(const Arg *arg)
  	}
  }
  
++int
++getOccupiedIndex(Monitor *m)
++{
++	unsigned int i = 0;
++
++	for (m = mons; m; m = m->next)
++		++i;
++
++	switch (i) {
++		default:
++			return IconsOccupiedDefault;
++		case 2:
++			return IconsOccupiedDualMonitor;
++	}
++}
++
 +char *
 +tagicon(Monitor *m, int tag)
 +{
 +	Client *c;
 +	char *icon;
++	int occupiedIndex = getOccupiedIndex(m);
 +	for (c = m->clients; c && (!(c->tags & 1 << tag)); c = c->next);
 +	// for (c = m->clients; c && (!(c->tags & 1 << tag) || HIDDEN(c)); c = c->next); // awesomebar / wintitleactions compatibility
-+	if (c && tagicons[IconsOccupied][0] != NULL)
-+		icon = geticon(m, tag, IconsOccupied);
++	if (c && tagicons[occupiedIndex][0] != NULL)
++		icon = geticon(m, tag, occupiedIndex);
 +	else {
 +		icon = geticon(m, tag, m->iconset);
 +		if (TEXTW(icon) <= lrpad && m->tagset[m->seltags] & 1 << tag)
@@ -269,6 +273,3 @@ index 4465af1..614a9ef 100644
  void
  tagmon(const Arg *arg)
  {
--- 
-2.19.1
-

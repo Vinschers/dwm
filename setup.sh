@@ -14,7 +14,7 @@ compile () {
 	cd ..
 }
 
-compile "dwm"
+compile "dwm" "config.h"
 
 compile "dmenu" "config.h"
 
