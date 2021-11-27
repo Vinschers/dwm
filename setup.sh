@@ -9,17 +9,18 @@ compile () {
 
 	make clean install
 	make clean
-	rm "$2"
+	! [ -z "$2" ] && rm "$2"
 
 	cd ..
 }
 
-compile "dwm" "config.h"
+compile "dwm"
 
 compile "dmenu" "config.h"
 
 compile "st" "config.h"
 
-compile "dwmblocks" "blocks.h"
+# compile "dwmblocks" "blocks.h"
+# compile "slstatus"
 
 cp xinitrc ~/.xinitrc

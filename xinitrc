@@ -36,5 +36,5 @@ xautolock -time $LOCK_TIME -locker slock &
 xrandr --output DP-1 --left-of HDMI-0 &
 picom -f &
 nitrogen --restore &
-dwmblocks &
+# dwmblocks &
 exec dwm
