@@ -88,8 +88,11 @@ void getcmds(int time)
 	const Block* current;
 	for (unsigned int i = 0; i < LENGTH(blocks); i++) {
 		current = blocks + i;
-		if ((current->interval != 0 && time % current->interval == 0) || time == -1)
-			getcmd(current,statusbar[i]);
+		if ((current->interval != 0 && time % current->interval == 0) || time == -1) {
+			getcmd(current, statusbar[i]);
+			if (i == LENGTH(blocks) - 1)
+				sprintf(statusbar[i], "%s ", statusbar[i]);
+		}
 	}
 }
 
