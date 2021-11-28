@@ -23,7 +23,7 @@ static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
 static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
-static const char col_cyan[]        = "#8F00FF";
+static const char col_cyan[]        = "#C21D23";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
@@ -165,6 +165,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_t,      			spawn,          SHCMD("latex2img") },
 	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+2 dwmblocks") },
 	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+2 dwmblocks") },
+	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("notify-send $(colorpicker --short --one-shot --preview)") },
 //	{ MODKEY|ShiftMask,             XK_a,      seticonset,     {.i = 0 } },
 //	{ MODKEY|ShiftMask,             XK_b,      seticonset,     {.i = 1 } },
 	TAGKEYS(                        XK_1,                      0)

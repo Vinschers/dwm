@@ -21,6 +21,5 @@ compile "dmenu" "config.h"
 compile "st" "config.h"
 
 compile "dwmblocks" "blocks.h"
-# compile "slstatus"
 
 cp xinitrc ~/.xinitrc
