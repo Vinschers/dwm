@@ -23,8 +23,10 @@ static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
 static const char col_cyan[]        = "#C21D23";
-static const unsigned int baralpha = 0xd0;
+static const unsigned int baralpha = 0xde;
 static const unsigned int borderalpha = OPAQUE;
+static const unsigned char showpreview = 0;
+static const unsigned int scalepreview = 4;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
