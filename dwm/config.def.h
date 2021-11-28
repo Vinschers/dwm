@@ -23,11 +23,22 @@ static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
 static const char col_cyan[]        = "#8F00FF";
+static const unsigned int baralpha = 0xd0;
+static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
+static const unsigned int alphas[][3]	= {
+	/*               fg         bg         border   */
+	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha  },
+
+};
+
+static const unsigned int s2dalphafg = alphas[SchemeNorm][ColFg];
+static const unsigned int s2dalphabg = alphas[SchemeNorm][ColBg];
 
 /* staticstatus */
 static const int statmonval = 1;
