@@ -23,7 +23,7 @@ static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
 static const char col_cyan[]        = "#C21D23";
-static const unsigned int baralpha = 0xde;
+static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const unsigned char showpreview = 0;
 static const unsigned int scalepreview = 4;
@@ -51,7 +51,7 @@ static char *tagicons[][NUMTAGS*2] = {
 	[IconsDefault]               = { "" },
 	[IconsVacant]                = { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
 	[IconsOccupiedDefault]       = { "", "", "", "", "", "<6>", "<7>", "", "" },
-	[IconsOccupiedDualMonitor]   = { "", "", "", "<3>", "", "<5>", "<7>", "<8>", "", "", "", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "" },
+	[IconsOccupiedDualMonitor]   = { "", "", "", "<4>", "", "<5>", "<7>", "<8>", "", "", "", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "" },
 };
 
 static const Rule rules[] = {
