@@ -2055,14 +2055,60 @@ tolowerstr(char *dest, const char *src)
 }
 
 char *
+gettagsuperscript(int tag)
+{
+	switch (tag) {
+		case 0:
+			return "¹";
+		case 1:
+			return "²";
+		case 2:
+			return "³";
+		case 3:
+			return "⁴";
+		case 4:
+			return "⁵";
+		case 5:
+			return "⁶";
+		case 6:
+			return "⁷";
+		case 7:
+			return "⁸";
+		case 8:
+			return "⁹";
+	}
+
+	return 0;
+}
+
+void
+appendtagsuperscript(char *icon, char *tag)
+{
+	char *aftertag = icon;
+	unsigned char firstbyte = (unsigned char) *icon;
+
+	if (*(icon) == 0 || firstbyte >> 7 == 0)
+		aftertag += 1;
+	else if (firstbyte >> 5 == 6)
+		aftertag += 2;
+	else if (firstbyte >> 4 == 14)
+		aftertag += 3;
+	else if (firstbyte >> 3 == 30)
+		aftertag += 4;
+
+	for (; *tag; ++aftertag)
+		*aftertag = *(tag++);
+
+	*aftertag = 0;
+}
+
+char *
 getoccupiedicon(Monitor *m, int tag)
 {
 	Client *c;
 	unsigned int i = 0;
 	const char *class;
-	char lowerclass[200];
-	char currentclass[200];
-	char *icon = NULL;
+	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowerclass[200], currentclass[200];
 	XClassHint ch = { NULL, NULL };
 
 	for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next);
@@ -2082,6 +2128,7 @@ getoccupiedicon(Monitor *m, int tag)
 
 		if (strstr(lowerclass, currentclass)) {
 			icon = occupiedicons[i][1];
+			appendtagsuperscript(icon, tagsuperscript);
 			break;
 		}
 	}
@@ -2101,6 +2148,7 @@ tagicon(Monitor *m, int tag)
 
 	if (!icon) {
 		icon = geticon(m, tag, m->iconset);
+
 		if (TEXTW(icon) <= lrpad && m->tagset[m->seltags] & 1 << tag)
 			icon = geticon(m, tag, IconsVacant);
 	}

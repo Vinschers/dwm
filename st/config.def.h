@@ -13,9 +13,10 @@ static char *font2[] = {
 	"Braille:pixelsize=10:antialias=true:autohint=true",
 	"JoyPixels:pixelsize=10:antialias=true:autohint=true",
 	"Noto Color Emoji:pixelsize=11:antialias=true:autohint=true",
-	"SourceHanMono:pixelsize=10:antialias=true:autohint=true",
-	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true",
+	"SourceHanMono:pixelsize=11:antialias=true:autohint=true",
+	"Inconsolata for Powerline:pixelsize=11:antialias=true:autohint=true",
 	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true",
+	"Latin Modern Math:pixelsize=11:antialias=true:autohint=true",
 };
 
 static int borderpx = 2;

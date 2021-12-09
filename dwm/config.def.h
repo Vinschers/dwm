@@ -15,13 +15,13 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 
 static const int vertpad            = 12;       /* vertical padding of bar */
 static const int sidepad            = 12;       /* horizontal padding of bar */
-static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12" };
+static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=13" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
 static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
-static const char col_cyan[]        = "#9F00FF";
+static const char col_cyan[]        = "#ED2839";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
@@ -46,10 +46,10 @@ static const char *tags[NUMTAGS] = { NULL };  /* left for compatibility reasons,
 static char *tagicons[][NUMTAGS] = {
 	[IconsDefault]        		= { "" },
 	[IconsVacant]         		= { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-	[IconsOccupied]		       	= { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
+	[IconsOccupied]		       	= { "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨" },
 };
 
-static char *occupiedicons[][2] = {
+static char occupiedicons[][2][50] = {
 	{ "Firefox", 		"" },
 	{ "Chromium", 		"" },
 	{ "st", 		"" },
