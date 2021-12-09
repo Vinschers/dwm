@@ -15,9 +15,6 @@ compile () {
 }
 
 compile "dwm" "config.h"
-
 compile "dmenu" "config.h"
-
 compile "st" "config.h"
-
 compile "dwmblocks" "blocks.h"

@@ -12,31 +12,27 @@ static const unsigned int gappov    = 12;       /* vert outer gap between window
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-#define ICONSIZE 16
-#define ICONSPACING 5
+
 static const int vertpad            = 12;       /* vertical padding of bar */
 static const int sidepad            = 12;       /* horizontal padding of bar */
-static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:pixelsize=15", "Noto Color Emoji:pixelsize=15" };
+static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#2E3440"; /* Status bar bg */
 static const char col_gray2[]       = "#3B4252"; /* Unselected border */
 static const char col_gray3[]       = "#ECEFF4"; /* Status bar fg */
 static const char col_gray4[]       = "#eeeeee"; /* Tags fg */
-static const char col_cyan[]        = "#C21D23";
+static const char col_cyan[]        = "#9F00FF";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
-static const unsigned char showpreview = 0;
-static const unsigned int scalepreview = 4;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
-static const unsigned int alphas[][3]	= {
-	/*               fg         bg         border   */
+static const unsigned int alphas[][3]      = {
+	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
-	[SchemeSel]  = { OPAQUE, baralpha, borderalpha  },
-
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
 };
 
 static const unsigned int s2dalphafg = alphas[SchemeNorm][ColFg];
@@ -47,11 +43,22 @@ static const int statmonval = 1;
 
 /* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
 static const char *tags[NUMTAGS] = { NULL };  /* left for compatibility reasons, i.e. code that checks LENGTH(tags) */
-static char *tagicons[][NUMTAGS*2] = {
-	[IconsDefault]               = { "" },
-	[IconsVacant]                = { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-	[IconsOccupiedDefault]       = { "", "", "", "", "", "<6>", "<7>", "", "" },
-	[IconsOccupiedDualMonitor]   = { "", "", "", "<4>", "", "<5>", "<7>", "<8>", "", "", "", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "" },
+static char *tagicons[][NUMTAGS] = {
+	[IconsDefault]        		= { "" },
+	[IconsVacant]         		= { "1", "2", "3", "4", "5", "6", "7", "8", "9" },
+	[IconsOccupied]		       	= { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
+};
+
+static char *occupiedicons[][2] = {
+	{ "Firefox", 		"" },
+	{ "Chromium", 		"" },
+	{ "st", 		"" },
+	{ "Discord", 		"" },
+	{ "simple-scan", 	"" },
+	{ "zathura", 		"" },
+	{ "mpv", 		"" },
+	{ "imv", 		"" },
+	{ "torrent", 		"" },
 };
 
 static const Rule rules[] = {
@@ -147,13 +154,15 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY|ControlMask,           XK_comma,  cyclelayout,    {.i = -1} },
-	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1} },
+	{ MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+//	{ MODKEY|ShiftMask,             XK_a,      seticonset,     {.i = 0 } },
+//	{ MODKEY|ShiftMask,             XK_b,      seticonset,     {.i = 1 } },
 	{ ALTKEY,                       XK_j,  				focusmon,       {.i = -1 } },
 	{ ALTKEY,                       XK_k, 				focusmon,       {.i = +1 } },
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
@@ -167,8 +176,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+2 dwmblocks") },
 	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+2 dwmblocks") },
 	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("notify-send $(colorpicker --short --one-shot --preview)") },
-//	{ MODKEY|ShiftMask,             XK_a,      seticonset,     {.i = 0 } },
-//	{ MODKEY|ShiftMask,             XK_b,      seticonset,     {.i = 1 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
