@@ -19,7 +19,8 @@ compile "st" "config.h"
 compile "dwmblocks" "blocks.h"
 
 \cp dwm/patches.h dwm-flexipatch/patches.h
-./flexipatch-finalizer.sh -d dwm-flexipatch/ -o dwm-final/ -r
-\cp -r dwm/* dwm-final/
-cd dwm-final
+./flexipatch-finalizer.sh -d dwm-flexipatch/ -o dwm/ -r
+\cp -r dwm-custom/* dwm/
+\cp -r dwm-custom/ dwm/
+cd dwm
 make clean install
