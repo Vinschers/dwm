@@ -27,10 +27,11 @@ drawstatusbar(BarArg *a, char* stext)
 	char *p;
 	Clr oldbg, oldfg;
 	len = strlen(stext);
-	if (!(text = (char*) malloc(sizeof(char)*(len + 1))))
+	if (!(text = (char*) malloc(sizeof(char)*(len + 5))))
 		die("malloc");
 	p = text;
 	copyvalidchars(text, stext);
+	sprintf(text, "%s  ", text);
 
 	x += lrpad / 2;
 	drw_setscheme(drw, scheme[LENGTH(colors)]);
@@ -60,7 +61,7 @@ drawstatusbar(BarArg *a, char* stext)
 					}
 					memcpy(buf, (char*)text+i+1, 7);
 					buf[7] = '\0';
-					drw_clr_create(drw, &drw->scheme[ColFg], buf);
+					drw_clr_create(drw, &drw->scheme[ColFg], buf, 0xff);
 					i += 7;
 				} else if (text[i] == 'b') {
 					char buf[8];
@@ -71,7 +72,7 @@ drawstatusbar(BarArg *a, char* stext)
 					}
 					memcpy(buf, (char*)text+i+1, 7);
 					buf[7] = '\0';
-					drw_clr_create(drw, &drw->scheme[ColBg], buf);
+					drw_clr_create(drw, &drw->scheme[ColBg], buf, 0xff);
 					i += 7;
 				} else if (text[i] == 'd') {
 					drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];

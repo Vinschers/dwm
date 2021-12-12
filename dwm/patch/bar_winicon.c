@@ -7,12 +7,11 @@ static uint32_t prealpha(uint32_t p) {
 	return (rb & 0xFF00FFu) | (g & 0x00FF00u) | ((~a) << 24u);
 }
 
-static uint8_t div255(uint16_t x) { return (x*0x8081u) >> 23u; }
-static uint32_t blend(uint32_t p1rb, uint32_t p1g, uint8_t p1a, uint32_t p2) {
+static uint32_t blend(uint32_t p1rb, uint32_t p1g, uint32_t p2) {
 	uint8_t a = p2 >> 24u;
 	uint32_t rb = (p2 & 0xFF00FFu) + ( (a * p1rb) >> 8u );
 	uint32_t g = (p2 & 0x00FF00u) + ( (a * p1g) >> 8u );
-	return (rb & 0xFF00FFu) | (g & 0x00FF00u) | div255(~a * 255u + a * p1a) << 24u;
+	return (rb & 0xFF00FFu) | (g & 0x00FF00u) | ((~a) << 24u);
 }
 
 void
@@ -20,12 +19,9 @@ drw_img(Drw *drw, int x, int y, XImage *img, uint32_t *tmp)
 {
 	if (!drw || !drw->scheme)
 		return;
-	uint32_t *data = (uint32_t *)img->data, p = drw->scheme[ColBg].pixel,
-			prb = p & 0xFF00FFu, pg = p & 0x00FF00u;
-	uint8_t pa = p >> 24u;
+	uint32_t *data = (uint32_t *)img->data, p = drw->scheme[ColBg].pixel, prb = p & 0xFF00FFu, pg = p & 0x00FF00u;
 	int icsz = img->width * img->height, i;
-	for (i = 0; i < icsz; ++i) tmp[i] = blend(prb, pg, pa, data[i]);
-
+	for (i = 0; i < icsz; ++i) tmp[i] = blend(prb, pg, data[i]);
 	img->data = (char *) tmp;
 	XPutImage(drw->dpy, drw->drawable, drw->gc, img, 0, 0, x, y, img->width, img->height);
 	img->data = (char *) data;
@@ -100,7 +96,7 @@ geticonprop(Window win)
 	}
 	XFree(p);
 	for (i = 0; i < icsz; ++i) icbuf[i] = prealpha(icbuf[i]);
-	return XCreateImage(dpy, drw->visual, drw->depth, ZPixmap, 0, (char *)icbuf, icw, ich, 32, 0);
+	return XCreateImage(dpy, DefaultVisual(dpy, screen), DefaultDepth(dpy, screen), ZPixmap, 0, (char *)icbuf, icw, ich, 32, 0);
 }
 
 void

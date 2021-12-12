@@ -1,4 +1,4 @@
-#define BAR_OFFSET 4
+#define BAR_OFFSET 2
 
 int
 width_tags(Bar *bar, BarArg *a)

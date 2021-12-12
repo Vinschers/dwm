@@ -16,6 +16,7 @@ static const char dwmdir[]               = "dwm";
 static const char localshare[]           = ".local/share";
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int bar_height         = 0;       /* 0 means derive from font, >= 1 explicit height */
 static const int vertpad            = 12;       /* vertical padding of bar */
 static const int sidepad            = 12;       /* horizontal padding of bar */
 
@@ -40,10 +41,10 @@ static const int quit_empty_window_count = 0;   /* only allow dwm to quit if no 
 static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=13" };
 static const char dmenufont[]       = "monospace:size=12";
 
-static const unsigned int baralpha = 0xd0;
-static const unsigned int borderalpha = OPAQUE;
+// static const unsigned int baralpha = 0xd0;
+// static const unsigned int borderalpha = OPAQUE;
 
-#include "layouts/default.h"
+#include "layouts/vinschers.h"
 
 /* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
 static char *tagicons[][NUMTAGS] = {
@@ -162,6 +163,7 @@ static const Layout layouts[] = {
 /* key definitions */
 #define MODKEY Mod4Mask
 #define ALTKEY Mod1Mask
+#define CAPSKEY 0xffe5
 
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -243,6 +245,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,          fullscreen,             {0} },
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
+	{ MODKEY|ControlMask,           XK_comma,      cyclelayout,            {.i = -1 } },
+	{ MODKEY|ControlMask,           XK_period,     cyclelayout,            {.i = +1 } },
 	{ ALTKEY,                       XK_j,  				focusmon,       {.i = -1 } },
 	{ ALTKEY,                       XK_k, 				focusmon,       {.i = +1 } },
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
@@ -253,9 +257,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,          SHCMD("simple-scan") },
 	{ MODKEY|ShiftMask,             XK_b,      			spawn,          SHCMD("xdg-open https://searx.be") },
 	{ MODKEY|ShiftMask,             XK_t,      			spawn,          SHCMD("latex2img") },
-	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+2 dwmblocks") },
-	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+2 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+3 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+3 dwmblocks") },
 	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("notify-send $(colorpicker --short --one-shot --preview)") },
+	{ ALTKEY,           		CAPSKEY,	  		spawn,          SHCMD("pkill -RTMIN+4 dwmblocks") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

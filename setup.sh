@@ -16,7 +16,10 @@ compile () {
 
 # compile "dmenu" "config.h"
 # compile "st" "config.h"
-compile "dwmblocks" "blocks.h"
+cd dwmblocks-async
+make clean install
+make clean
+cd ..
 
 
 \cp dwm-custom/patches.h dwm-flexipatch/patches.h
