@@ -14,7 +14,12 @@ compile () {
 	cd ..
 }
 
-compile "dwm" "config.h"
 compile "dmenu" "config.h"
 compile "st" "config.h"
 compile "dwmblocks" "blocks.h"
+
+\cp dwm/patches.h dwm-flexipatch/patches.h
+./flexipatch-finalizer.sh -d dwm-flexipatch/ -o dwm-final/ -r
+\cp -r dwm/* dwm-final/
+cd dwm-final
+make clean install
