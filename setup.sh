@@ -14,11 +14,12 @@ compile () {
 	cd ..
 }
 
-compile "dmenu" "config.h"
-compile "st" "config.h"
+# compile "dmenu" "config.h"
+# compile "st" "config.h"
 compile "dwmblocks" "blocks.h"
 
-\cp dwm/patches.h dwm-flexipatch/patches.h
+
+\cp dwm-custom/patches.h dwm-flexipatch/patches.h
 ./flexipatch-finalizer.sh -d dwm-flexipatch/ -o dwm/ -r
 \cp -r dwm-custom/* dwm/
 \cp -r dwm-custom/ dwm/
