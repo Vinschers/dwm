@@ -16,7 +16,6 @@ static const char dwmdir[]               = "dwm";
 static const char localshare[]           = ".local/share";
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const int bar_height         = 0;       /* 0 means derive from font, >= 1 explicit height */
 static const int vertpad            = 12;       /* vertical padding of bar */
 static const int sidepad            = 12;       /* horizontal padding of bar */
 
@@ -38,7 +37,7 @@ static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_NONE;
 static const int quit_empty_window_count = 0;   /* only allow dwm to quit if no (<= count) windows are open */
 
-static const char *fonts[]          = { "monospace:size=12", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=13" };
+static const char *fonts[]          = { "Source Code Pro:size=12:style=bold", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=13" };
 static const char dmenufont[]       = "monospace:size=12";
 
 // static const unsigned int baralpha = 0xd0;
@@ -115,7 +114,6 @@ static const BarRule barrules[] = {
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_tags,              draw_tags,              click_tags,              "tags" },
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,          draw_ltsymbol,          click_ltsymbol,          "layout" },
 	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,          draw_status2d,          click_statuscmd,         "status2d" },
-	{ -1,        0,     BAR_ALIGN_NONE,   width_wintitle,          draw_wintitle,          click_wintitle,          "wintitle" },
 };
 
 /* layout(s) */

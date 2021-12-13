@@ -373,8 +373,8 @@ static void zoom(const Arg *arg);
 
 /* variables */
 static const char broken[] = "broken";
-static char stext[1024];
-static char rawstext[1024];
+static char stext[2048];
+static char rawstext[2048];
 
 static int screen;
 static int sw, sh;           /* X display screen geometry width, height */
