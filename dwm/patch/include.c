@@ -9,6 +9,7 @@
 #include "bar_statuscmd.c"
 #include "bar_winicon.c"
 #include "bar_tags.c"
+#include "bar_wintitle.c"
 
 /* Other patches */
 #include "autostart.c"
