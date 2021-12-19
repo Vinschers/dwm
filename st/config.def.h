@@ -87,7 +87,7 @@ static unsigned int cursorthickness = 2;
  * 0: disable (render all U25XX glyphs normally from the font).
  */
 const int boxdraw = 1;
-const int boxdraw_bold = 1;
+const int boxdraw_bold = 0;
 
 /* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
 const int boxdraw_braille = 1;
@@ -123,29 +123,30 @@ float alpha = 0.9;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-  	/* 8 normal colors */
-	[0] = "#000000", /* black   */
-  	[1] = "#ff5555", /* red     */
-  	[2] = "#50fa7b", /* green   */
-  	[3] = "#f1fa8c", /* yellow  */
-  	[4] = "#bd93f9", /* blue    */
-  	[5] = "#ff79c6", /* magenta */
-  	[6] = "#8be9fd", /* cyan    */
-  	[7] = "#bbbbbb", /* white   */
 
-	/* 8 bright colors */
-	[8]  = "#44475a", /* black   */
-  	[9]  = "#ff5555", /* red     */
-  	[10] = "#50fa7b", /* green   */
-  	[11] = "#f1fa8c", /* yellow  */
-  	[12] = "#bd93f9", /* blue    */
-  	[13] = "#ff79c6", /* magenta */
-  	[14] = "#8be9fd", /* cyan    */
-  	[15] = "#ffffff", /* white   */
+  /* 8 normal colors */
+  [0] = "#000000", /* black   */
+  [1] = "#ff5555", /* red     */
+  [2] = "#50fa7b", /* green   */
+  [3] = "#f1fa8c", /* yellow  */
+  [4] = "#bd93f9", /* blue    */
+  [5] = "#ff79c6", /* magenta */
+  [6] = "#8be9fd", /* cyan    */
+  [7] = "#bbbbbb", /* white   */
 
-	/* special colors */
-	[256] = "#282a36", /* background */
-	[257] = "#f8f8f2", /* foreground */
+  /* 8 bright colors */
+  [8]  = "#44475a", /* black   */
+  [9]  = "#ff5555", /* red     */
+  [10] = "#50fa7b", /* green   */
+  [11] = "#f1fa8c", /* yellow  */
+  [12] = "#bd93f9", /* blue    */
+  [13] = "#ff79c6", /* magenta */
+  [14] = "#8be9fd", /* cyan    */
+  [15] = "#ffffff", /* white   */
+
+  /* special colors */
+  [256] = "#282a36", /* background */
+  [257] = "#f8f8f2", /* foreground */
 };
 
 /*
@@ -162,7 +163,6 @@ static unsigned int defaultrcs = 257;
  * will reverse too. Another logic would only make the simple feature too
  * complex.
  */
-
 unsigned int defaultitalic = 7;
 unsigned int defaultunderline = 7;
 /*
@@ -208,8 +208,8 @@ static uint forcemousemod = ShiftMask;
 const unsigned int mousescrollincrement = 3;
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
-	{ XK_ANY_MOD,           Button4, kscrollup,      {.i = mousescrollincrement},      0, /* !alt */ -1 },
-	{ XK_ANY_MOD,           Button5, kscrolldown,    {.i = mousescrollincrement},      0, /* !alt */ -1 },
+	{ ShiftMask,            Button4, kscrollup,      {.i = mousescrollincrement } },
+	{ ShiftMask,            Button5, kscrolldown,    {.i = mousescrollincrement } },
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
@@ -231,7 +231,7 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
-	{ ControlMask,          XK_v,           clippaste,      {.i =  0} },
+	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
