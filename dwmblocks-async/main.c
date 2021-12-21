@@ -72,7 +72,10 @@ int getStatus(char* new, char* old) {
 	new[0] = '\0';
 
 	for (int i = 0; i < LEN(blocks); i++) {
-		if (strlen(new) && strlen(outputs[i]))
+        if (!strlen(outputs[i]))
+            continue;
+
+		if (strlen(new))
 			strcat(new, DELIMITER);
 		strcat(new, blocks[i].icon);
 		strcat(new, outputs[i]);

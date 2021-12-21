@@ -14,7 +14,7 @@ compile () {
 	cd ..
 }
 
-# compile "dmenu" "config.h"
+compile "dmenu" "config.h"
 compile "st" "config.h"
 cd dwmblocks-async
 make clean install

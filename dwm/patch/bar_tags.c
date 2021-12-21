@@ -42,8 +42,7 @@ draw_tags(Bar *bar, BarArg *a)
 			? SchemeUrg
 			: SchemeTagsNorm
 		]);
-		if (i == 0)
-			drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
+		drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
 		drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
 		drawindicator(m, NULL, occ, x, a->y, w, a->h, i, -1, invert, tagindicatortype);
 		if (ulineall || m->tagset[m->seltags] & 1 << i)
