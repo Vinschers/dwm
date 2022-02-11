@@ -42,7 +42,8 @@ draw_tags(Bar *bar, BarArg *a)
 			? SchemeUrg
 			: SchemeTagsNorm
 		]);
-		drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
+        if (x == a->x)
+		    drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
 		drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
 		drawindicator(m, NULL, occ, x, a->y, w, a->h, i, -1, invert, tagindicatortype);
 		if (ulineall || m->tagset[m->seltags] & 1 << i)
@@ -57,9 +58,13 @@ int
 click_tags(Bar *bar, Arg *arg, BarArg *a)
 {
 	int i = 0, x = lrpad / 2;
+	char icon[30];
 
 	do {
-		x += TEXTW(tagicon(bar->mon, i));
+		strcpy(icon, tagicon(bar->mon, i));
+		if (icon[0] == 0)
+			++i;
+		x += TEXTW(icon);
 	} while (a->x >= x && ++i < NUMTAGS);
 	if (i < NUMTAGS) {
 		arg->ui = 1 << i;

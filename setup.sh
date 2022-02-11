@@ -21,10 +21,5 @@ make clean install
 make clean
 cd ..
 
-
-\cp dwm-custom/patches.h dwm-flexipatch/patches.h
-./flexipatch-finalizer.sh -d dwm-flexipatch/ -o dwm/ -r
-\cp -r dwm-custom/* dwm/
-\cp -r dwm-custom/ dwm/
 cd dwm
 make clean install

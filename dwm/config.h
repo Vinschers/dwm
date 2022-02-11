@@ -37,7 +37,7 @@ static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_NONE;
 static const int quit_empty_window_count = 0;   /* only allow dwm to quit if no (<= count) windows are open */
 
-static const char *fonts[]          = { "Source Code Pro:size=12:style=bold", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=13" };
+static const char *fonts[]          = { "Source Code Pro:size=12:style=bold", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=15" };
 static const char dmenufont[]       = "Source Code Pro:size=12";
 
 // static const unsigned int baralpha = 0xd0;
@@ -55,13 +55,18 @@ static char *tagicons[][NUMTAGS] = {
 static char occupiedicons[][2][50] = {
 	{ "Firefox", 		"" },
 	{ "Chromium", 		"" },
-	{ "st", 		"" },
+	{ "st",		 	"" },
+	{ "alacritty", 		"" },
 	{ "Discord", 		"" },
 	{ "simple-scan", 	"" },
 	{ "zathura", 		"" },
+	{ "okular", 		"" },
 	{ "mpv", 		"" },
 	{ "imv", 		"" },
 	{ "torrent", 		"" },
+	{ "minecraft", 		"" },
+	{ "spotify", 		"" },
+	{ "zotero",		"📚" },
 };
 
 /* There are two options when it comes to per-client rules:
@@ -185,7 +190,7 @@ static const char *dmenucmd[] = {
 	"-sf", selfgcolor,
 	NULL
 };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"

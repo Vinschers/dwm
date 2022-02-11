@@ -6,10 +6,9 @@
 #define DIV(bg) "^t^^v^^c"bg"^^t^^b"bg"^^v^ "
 
 const Block blocks[] = {
-	BLOCK("^v^"DIV("#2E3440"),		"sb-network",			1,			9),
-	BLOCK(     DIV("#4C566A"),		"sb-price",			60,			8),
-	BLOCK(     DIV("#2E3440"),		"sb-weather",			60,			7),
-	BLOCK(     DIV("#4C566A"),		"sb-packages",			7200,			6),
+	BLOCK("^v^"DIV("#4C566A"),		"sb-network",			1,			8),
+	BLOCK(     DIV("#2E3440"),		"sb-price",			60,			7),
+	BLOCK(     DIV("#4C566A"),		"sb-weather",			60,			6),
 	BLOCK(	   DIV("#2E3440"),		"sb-keyboard",			0,			5),
 	BLOCK(	   DIV("#4C566A"),		"sb-volume",			0,			4),
 	BLOCK(	   DIV("#2E3440"),		"sb-hardware",			2,			3),
