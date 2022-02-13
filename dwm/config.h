@@ -43,7 +43,7 @@ static const char dmenufont[]       = "Source Code Pro:size=12";
 // static const unsigned int baralpha = 0xd0;
 // static const unsigned int borderalpha = OPAQUE;
 
-#include "layouts/vinschers.h"
+#include "layouts/tokyo.h"
 
 /* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
 static char *tagicons[][NUMTAGS] = {
