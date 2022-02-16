@@ -55,18 +55,21 @@ static char *tagicons[][NUMTAGS] = {
 static char occupiedicons[][2][50] = {
 	{ "Firefox", 		"" },
 	{ "Chromium", 		"" },
-	{ "st",		 	"" },
+	{ "vim",		    "" },
+    { "htop",           "" },
+    { "gtop",           "" },
 	{ "alacritty", 		"" },
 	{ "Discord", 		"" },
 	{ "simple-scan", 	"" },
 	{ "zathura", 		"" },
 	{ "okular", 		"" },
-	{ "mpv", 		"" },
-	{ "imv", 		"" },
+	{ "mpv", 		    "" },
+	{ "sxiv", 		    "" },
 	{ "torrent", 		"" },
 	{ "minecraft", 		"" },
 	{ "spotify", 		"" },
-	{ "zotero",		"📚" },
+	{ "spotui", 		"" },
+	{ "zotero",		    "📚" },
 };
 
 /* There are two options when it comes to per-client rules:
@@ -256,15 +259,15 @@ static Key keys[] = {
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
 	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,         {.i = +1 } },
 	{ ShiftMask,           		XK_Print,  			spawn,          SHCMD("flameshot gui") },
-	{ MODKEY|ShiftMask,             XK_e,      			spawn,          SHCMD("dmenuselector emojis") },
-	{ MODKEY|ShiftMask,             XK_m,      			spawn,          SHCMD("dmenuselector math") },
+	{ MODKEY|ShiftMask,             XK_e,      			spawn,          SHCMD("select_emoji") },
+	{ MODKEY|ShiftMask,             XK_m,      			spawn,          SHCMD("select_math") },
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,          SHCMD("simple-scan") },
 	{ MODKEY|ShiftMask,             XK_b,      			spawn,          SHCMD("xdg-open about:blank") },
 	{ MODKEY|ShiftMask,             XK_t,      			spawn,          SHCMD("latex2img") },
-	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("pamixer -i 1 && pkill -RTMIN+4 dwmblocks") },
-	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("pamixer -d 1 && pkill -RTMIN+4 dwmblocks") },
-	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("notify-send $(colorpicker --short --one-shot --preview)") },
-	{ ALTKEY,           		CAPSKEY,	  		spawn,          SHCMD("pkill -RTMIN+5 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("increase_volume") },
+	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("decrease_volume") },
+	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("select_color") },
+	{ ALTKEY,           		CAPSKEY,	  		    spawn,          SHCMD("update_dwmblocks 5") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

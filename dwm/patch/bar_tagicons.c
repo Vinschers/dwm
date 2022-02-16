@@ -75,38 +75,26 @@ appendtagsuperscript(char *icon, char *tag)
 char *
 getoccupiedicon(Monitor *m, int tag)
 {
-	Client *c;
-	unsigned int i = 0;
-	const char *class;
-	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowerclass[200], currentclass[200];
-	XClassHint ch = { NULL, NULL };
+	Client *c = NULL;
+    unsigned short i = 0;
+	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowername[200], currentname[200];
 
-	for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next);
-
+    for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next);
 	if (!c)
 		return NULL;
 
-	/* rule matching */
-	XGetClassHint(dpy, c->win, &ch);
-	class    = ch.res_class ? ch.res_class : broken;
-	tolowerstr(lowerclass, class);
-
+	tolowerstr(lowername, c->name);
 	icon = geticon(m, tag, IconsOccupied);
 
 	for (i = 0; i < LENGTH(occupiedicons); ++i) {
-		tolowerstr(currentclass, occupiedicons[i][0]);
+		tolowerstr(currentname, occupiedicons[i][0]);
 
-		if (strstr(lowerclass, currentclass)) {
+		if (strstr(lowername, currentname)) {
 			icon = occupiedicons[i][1];
 			appendtagsuperscript(icon, tagsuperscript);
 			break;
 		}
 	}
-
-	if (ch.res_class)
-		XFree(ch.res_class);
-	if (ch.res_name)
-		XFree(ch.res_name);
 
 	return icon;
 }
