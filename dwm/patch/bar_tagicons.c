@@ -113,22 +113,3 @@ tagicon(Monitor *m, int tag)
 
 	return icon;
 }
-
-/*
-char *
-tagicon(Monitor *m, int tag)
-{
-	char *icon = getoccupiedicon(m, tag);
-	int tagindex = tag + NUMTAGS * m->index;
-
-	if (!icon) {
-		if (tagindex >= LENGTH(tagicons[DEFAULT_TAGS]))
-			tagindex = tagindex % LENGTH(tagicons[DEFAULT_TAGS]);
-		if (m->alttag)
-			icon = tagicons[ALTERNATIVE_TAGS][tagindex];
-		icon = tagicons[DEFAULT_TAGS][tagindex];
-	}
-
-	return icon;
-}
-*/
