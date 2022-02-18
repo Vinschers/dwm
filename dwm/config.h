@@ -59,6 +59,7 @@ static char occupiedicons[][2][50] = {
     { "htop",           "" },
     { "gtop",           "" },
 	{ "alacritty", 		"" },
+	{ "st", 		    "" },
 	{ "Discord", 		"" },
 	{ "simple-scan", 	"" },
 	{ "zathura", 		"" },
@@ -169,6 +170,7 @@ static const Layout layouts[] = {
 #define MODKEY Mod4Mask
 #define ALTKEY Mod1Mask
 #define CAPSKEY 0xffe5
+#define KP_ENTER 0xff8d
 
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -191,7 +193,7 @@ static const char *dmenucmd[] = {
 	"-sf", selfgcolor,
 	NULL
 };
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *termcmd[]  = { "st", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -200,6 +202,7 @@ static Key keys[] = {
 	/* modifier                     key            function                argument */
 	{ MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } },
+	{ MODKEY|ShiftMask,             KP_ENTER,      spawn,                  {.v = termcmd } },
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
 	{ MODKEY,                       XK_k,          focusstack,             {.i = -1 } },

@@ -5,11 +5,15 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static char *font = "mono:size=15:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
-/*	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true", */
-/*	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true", */
+    "Latin Modern Math:size=15:antialias=true:autohint=true",
+    "Hack Nerd Font Mono:size=15:antialias=true:autohint=true",
+    "fontawesome:style=Solid:size=15:antialias=true:autohint=true",
+    "fontawesomebrands:style=Solid:size=12:antialias=true:autohint=true",
+    "JoyPixels:size=12:antialias=true:autohint=true",
+    "Sazanami Mincho:size=12:antialias=true:autohint=true",
 };
 
 static int borderpx = 2;
@@ -104,37 +108,37 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* bg opacity */
-float alpha = 0.8;
+float alpha = 0.85;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* 8 normal colors */
-	"black",
-	"red3",
-	"green3",
-	"yellow3",
-	"blue2",
-	"magenta3",
-	"cyan3",
-	"gray90",
+    /* 8 normal colors */
+    [0] = "#000000", /* black   */
+    [1] = "#ff6767", /* red     */
+    [2] = "#38de21", /* green   */
+    [3] = "#ffe50a", /* yellow  */
+    [4] = "#1460d2", /* blue    */
+    [5] = "#ff4d8e", /* magenta */
+    [6] = "#00bbbb", /* cyan    */
+    [7] = "#bbbbbb", /* white   */
 
-	/* 8 bright colors */
-	"gray50",
-	"red",
-	"green",
-	"yellow",
-	"#5c5cff",
-	"magenta",
-	"cyan",
-	"white",
+    /* 8 bright colors */
+    [8] = "#6f6f6f",  /* black   */
+    [9] = "#f7575d",  /* red     */
+    [10] = "#3bd01d", /* green   */
+    [11] = "#edc809", /* yellow  */
+    [12] = "#5555ff", /* blue    */
+    [13] = "#ff88ff", /* magenta */
+    [14] = "#6ae3fa", /* cyan    */
+    [15] = "#ffffff", /* white   */
 
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
 	"#add8e6", /* 256 -> cursor */
 	"#555555", /* 257 -> rev cursor*/
-	"#000000", /* 258 -> bg */
-	"#e5e5e5", /* 259 -> fg */
+	"#132738", /* 258 -> bg */
+	"#ffffff", /* 259 -> fg */
 };
 
 
@@ -192,8 +196,8 @@ static uint forcemousemod = ShiftMask;
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
-	{ ShiftMask,            Button4, kscrollup,      {.i = 1} },
-	{ ShiftMask,            Button5, kscrolldown,    {.i = 1} },
+	{ ShiftMask,            Button4, kscrollup,      {.i = 3} },
+	{ ShiftMask,            Button5, kscrolldown,    {.i = 3} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
 };
@@ -218,8 +222,8 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_Home,        zoomreset,       {.f =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,        {.i =  0} },
 	{ TERMMOD,              XK_V,           clippaste,       {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,       {.i = -1} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,     {.i = -1} },
+	{ ShiftMask,            XK_Page_Up,     kscrollup,       {.i = -3} },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,     {.i = -3} },
 	{ TERMMOD,              XK_Y,           selpaste,        {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,        {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,         {.i =  0} },
