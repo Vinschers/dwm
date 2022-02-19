@@ -15,11 +15,18 @@ compile () {
 }
 
 compile "dmenu" "config.h"
-compile "st" "config.h"
+
+cd st
+make install
+make clean
+cd ..
+
 cd dwmblocks-async
-make clean install
+make install
 make clean
 cd ..
 
 cd dwm
-make clean install
+make install
+make clean
+cd ..
