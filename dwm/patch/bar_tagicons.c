@@ -72,6 +72,42 @@ appendtagsuperscript(char *icon, char *tag)
 	*aftertag = 0;
 }
 
+unsigned char
+hex_to_dec(const char *hex)
+{
+    unsigned char ret = 0;
+
+    if (hex[0] >= 'a')
+        ret += hex[0] - 'a' + 10;
+    else
+        ret += hex[0] - '0';
+    ret <<= 4;
+
+    if (hex[1] >= 'a')
+        ret += hex[1] - 'a' + 10;
+    else
+        ret += hex[1] - '0';
+
+    return ret;
+}
+
+void
+change_scheme(char *color, Clr *scheme)
+{
+    char lowercolor[10];
+    unsigned short red, green, blue;
+
+    tolowerstr(lowercolor, color + 1); // Remove #
+
+    red = hex_to_dec(lowercolor);
+    green = hex_to_dec(lowercolor + 2);
+    blue = hex_to_dec(lowercolor + 4);
+
+    scheme->color.red = red << 8;
+    scheme->color.green = green << 8;
+    scheme->color.blue = blue << 8;
+}
+
 char *
 getoccupiedicon(Monitor *m, int tag)
 {
@@ -92,6 +128,11 @@ getoccupiedicon(Monitor *m, int tag)
 		if (strstr(lowername, currentname)) {
 			icon = occupiedicons[i][1];
 			appendtagsuperscript(icon, tagsuperscript);
+
+            if (strlen(occupiedicons[i][2]))
+                change_scheme(occupiedicons[i][2], scheme[SchemeTagsNorm]);
+            else
+                change_scheme(colors[SchemeTagsNorm][0], scheme[SchemeTagsNorm]);
 			break;
 		}
 	}
