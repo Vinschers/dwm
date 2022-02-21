@@ -30,7 +30,7 @@ static char tagsnormbgcolor[]            = BAR_BG;
 static char tagsnormbordercolor[]        = NORMAL_BORDER;
 static char tagsnormfloatcolor[]         = NORMAL_BORDER;
 
-static char tagsselfgcolor[]             = "#6ae3fa";
+static char tagsselfgcolor[]             = "#effcfe";
 static char tagsselbgcolor[]             = "#1460d2";
 static char tagsselbordercolor[]         = SELECTED_BORDER;
 static char tagsselfloatcolor[]          = SELECTED_BORDER;

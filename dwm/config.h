@@ -71,6 +71,7 @@ static char occupiedicons[][3][50] = {
 	{ "spotify", 		"",    "#1DB954" },
 	{ "spotui", 		"",    "#1DB954" },
 	{ "zotero",		    "📚",   "" },
+	{ "keepass",		"",    "#539739" },
 };
 
 /* There are two options when it comes to per-client rules:
