@@ -120,7 +120,9 @@ getoccupiedicon(Monitor *m, int tag)
 		return NULL;
 
 	tolowerstr(lowername, c->name);
+
 	icon = geticon(m, tag, IconsOccupied);
+    change_scheme(colors[SchemeTagsNorm][0], scheme[SchemeTagsNorm]);
 
 	for (i = 0; i < LENGTH(occupiedicons); ++i) {
 		tolowerstr(currentname, occupiedicons[i][0]);
@@ -131,8 +133,7 @@ getoccupiedicon(Monitor *m, int tag)
 
             if (strlen(occupiedicons[i][2]))
                 change_scheme(occupiedicons[i][2], scheme[SchemeTagsNorm]);
-            else
-                change_scheme(colors[SchemeTagsNorm][0], scheme[SchemeTagsNorm]);
+
 			break;
 		}
 	}

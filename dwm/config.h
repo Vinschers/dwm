@@ -72,6 +72,7 @@ static char occupiedicons[][3][50] = {
 	{ "spotui", 		"",    "#1DB954" },
 	{ "zotero",		    "📚",   "" },
 	{ "keepass",		"",    "#539739" },
+	{ "webcam",		    "🎥",   "" },
 };
 
 /* There are two options when it comes to per-client rules:
@@ -181,6 +182,7 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SHICMD(cmd) { .v = (const char*[]){ "/bin/sh", "-e", cmd, NULL } }
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -256,20 +258,23 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
 	{ MODKEY|ControlMask,           XK_comma,      cyclelayout,            {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period,     cyclelayout,            {.i = +1 } },
-	{ ALTKEY,                       XK_j,  				focusmon,       {.i = -1 } },
-	{ ALTKEY,                       XK_k, 				focusmon,       {.i = +1 } },
-	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,         {.i = -1 } },
-	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,         {.i = +1 } },
-	{ ShiftMask,           		XK_Print,  			spawn,          SHCMD("flameshot gui") },
-	{ MODKEY|ShiftMask,             XK_e,      			spawn,          SHCMD("select_emoji") },
-	{ MODKEY|ShiftMask,             XK_m,      			spawn,          SHCMD("select_math") },
-	{ MODKEY|ShiftMask,             XK_p,      			spawn,          SHCMD("simple-scan") },
-	{ MODKEY|ShiftMask,             XK_b,      			spawn,          SHCMD("xdg-open about:blank") },
-	{ MODKEY|ShiftMask,             XK_t,      			spawn,          SHCMD("latex2img") },
-	{ MODKEY|ShiftMask,             XK_equal,  			spawn,          SHCMD("increase_volume") },
-	{ MODKEY|ShiftMask,             XK_minus,  			spawn,          SHCMD("decrease_volume") },
-	{ MODKEY|ControlMask,           XK_c,	  			spawn,          SHCMD("select_color") },
-	{ ALTKEY,           		CAPSKEY,	  		    spawn,          SHCMD("update_dwmblocks 5") },
+	{ ALTKEY,                       XK_j,  				focusmon,          {.i = -1 } },
+	{ ALTKEY,                       XK_k, 				focusmon,          {.i = +1 } },
+	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,            {.i = -1 } },
+	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,            {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_t|XK_h,  		spawn,             SHICMD("htop") },
+	{ ShiftMask,           		    XK_Print,  			spawn,             SHCMD("flameshot gui") },
+	{ MODKEY|ShiftMask,             XK_e,      			spawn,             SHCMD("select_emoji") },
+	{ MODKEY|ShiftMask,             XK_m,      			spawn,             SHCMD("select_math") },
+	{ MODKEY|ShiftMask,             XK_p,      			spawn,             SHCMD("simple-scan") },
+	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open about:blank") },
+	{ MODKEY|ShiftMask,             XK_t,      			spawn,             SHCMD("latex2img") },
+	{ MODKEY|ShiftMask,             XK_equal,  			spawn,             SHCMD("increase_volume") },
+	{ MODKEY|ShiftMask,             XK_minus,  			spawn,             SHCMD("decrease_volume") },
+	{ MODKEY|ShiftMask,             XK_w,     			spawn,             SHCMD("webcam") },
+	{ MODKEY|ControlMask,           XK_c,	  			spawn,             SHCMD("select_color") },
+	{ ALTKEY,           		    CAPSKEY,	  		spawn,             SHCMD("update_dwmblocks 5") },
+	{ ControlMask|ALTKEY,           XK_Delete,	  		spawn,             SHCMD("lock") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
