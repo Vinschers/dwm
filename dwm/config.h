@@ -62,8 +62,8 @@ static char occupiedicons[][3][50] = {
 	{ "st", 		    "",    "#FFFFFF" },
 	{ "Discord", 		"",    "#5865F2" },
 	{ "simple-scan", 	"",    "" },
-	{ "zathura", 		"",    "#A60027" },
-	{ "okular", 		"",    "#A60027" },
+	{ "zathura", 		"",    "#DC1D00" },
+	{ "okular", 		"",    "#DC1D00" },
 	{ "mpv", 		    "",    "" },
 	{ "sxiv", 		    "",    "" },
 	{ "torrent", 		"",    "#00FFFF" },
@@ -72,7 +72,7 @@ static char occupiedicons[][3][50] = {
 	{ "spotui", 		"",    "#1DB954" },
 	{ "zotero",		    "📚",   "" },
 	{ "keepass",		"",    "#539739" },
-	{ "webcam",		    "🎥",   "" },
+	{ "webcam",		    "犯",   "" },
 };
 
 /* There are two options when it comes to per-client rules:
@@ -267,7 +267,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,      			spawn,             SHCMD("select_emoji") },
 	{ MODKEY|ShiftMask,             XK_m,      			spawn,             SHCMD("select_math") },
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,             SHCMD("simple-scan") },
-	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open about:blank") },
+	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open localhost:3160") },
 	{ MODKEY|ShiftMask,             XK_t,      			spawn,             SHCMD("latex2img") },
 	{ MODKEY|ShiftMask,             XK_equal,  			spawn,             SHCMD("increase_volume") },
 	{ MODKEY|ShiftMask,             XK_minus,  			spawn,             SHCMD("decrease_volume") },
