@@ -55,15 +55,16 @@ draw_tags(Bar *bar, BarArg *a)
 			? SchemeUrg
 			: SchemeTagsNorm
 		]);
-        if (x == a->x)
-		    drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
+		drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
 
         if (img_icon) {
-		    drw_text(drw, x + BAR_OFFSET + c->icon->width, a->y, w, a->h, lrpad / 2, icon, invert, False);
-		    drw_img(drw, x + BAR_OFFSET + c->icon->width/2, a->y, c->icon, tmpicon);
+		    drw_text(drw, x + BAR_OFFSET + c->icon->width, a->y, TEXTW(icon), a->h, lrpad / 2, icon, invert, False);
+		    drw_img(drw, x + BAR_OFFSET + lrpad / 2, a->y + (a->h - c->icon->height)/2, c->icon, tmpicon);
         }
-        else
+        else {
 		    drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
+		    drw_text(drw, x + w, a->y, w, a->h, lrpad / 2, "", invert, False);
+        }
 
 		drawindicator(m, NULL, occ, x, a->y, w, a->h, i, -1, invert, tagindicatortype);
 		if (ulineall || m->tagset[m->seltags] & 1 << i)
@@ -86,7 +87,7 @@ click_tags(Bar *bar, Arg *arg, BarArg *a)
 	do {
 		strcpy(icon, tagicon(bar->mon, i, &img_icon));
 		if (icon[0] == 0)
-			++i;
+            continue;
 		x += TEXTW(icon);
         if (img_icon) {
     	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);

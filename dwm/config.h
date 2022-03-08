@@ -19,7 +19,7 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int vertpad            = 12;       /* vertical padding of bar */
 static const int sidepad            = 12;       /* horizontal padding of bar */
 
-#define ICONSIZE 20    /* icon size */
+#define ICONSIZE 15    /* icon size */
 #define ICONSPACING 5  /* space between icon and title */
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
@@ -56,7 +56,6 @@ static char occupiedicons[][3][50] = {
 	{ "vim",		    "",    "#019833" },
     { "htop",           "",    "#BA9FD7" },
     { "gtop",           "",    "#BA9FD7" },
-	{ "simple-scan", 	"",    "" },
 	{ "zathura", 		"",    "#DC1D00" },
 	{ "okular", 		"",    "#DC1D00" },
 	{ "sxiv", 		    "",    "" },
@@ -257,7 +256,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,      			spawn,             SHCMD("select_emoji") },
 	{ MODKEY|ShiftMask,             XK_m,      			spawn,             SHCMD("select_math") },
 	{ MODKEY|ShiftMask,             XK_p,      			spawn,             SHCMD("simple-scan") },
-	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open localhost:3160") },
+	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open localhost:5000") },
 	{ MODKEY|ShiftMask,             XK_t,      			spawn,             SHCMD("latex2img") },
 	{ MODKEY|ShiftMask,             XK_equal,  			spawn,             SHCMD("increase_volume") },
 	{ MODKEY|ShiftMask,             XK_minus,  			spawn,             SHCMD("decrease_volume") },
