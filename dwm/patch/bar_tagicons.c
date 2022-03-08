@@ -109,11 +109,12 @@ change_scheme(char *color, Clr *scheme)
 }
 
 char *
-getoccupiedicon(Monitor *m, int tag)
+getoccupiedicon(Monitor *m, int tag, char *img_icon)
 {
 	Client *c = NULL;
     unsigned short i = 0;
 	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowername[200], currentname[200];
+    unsigned char hasicon = 0;
 
     for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next);
 	if (!c)
@@ -128,6 +129,7 @@ getoccupiedicon(Monitor *m, int tag)
 		tolowerstr(currentname, occupiedicons[i][0]);
 
 		if (strstr(lowername, currentname)) {
+            hasicon = 1;
 			icon = occupiedicons[i][1];
 			appendtagsuperscript(icon, tagsuperscript);
 
@@ -138,13 +140,19 @@ getoccupiedicon(Monitor *m, int tag)
 		}
 	}
 
+    if (!hasicon && c->icon) {
+        *img_icon = 1;
+        return gettagsuperscript(tag);
+    }
+
 	return icon;
 }
 
 char *
-tagicon(Monitor *m, int tag)
+tagicon(Monitor *m, int tag, char *img_icon)
 {
-	char *icon = getoccupiedicon(m, tag);
+    *img_icon = 0;
+	char *icon = getoccupiedicon(m, tag, img_icon);
 
 	if (!icon) {
 		icon = geticon(m, tag, IconsDefault);

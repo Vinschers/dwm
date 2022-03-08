@@ -3,10 +3,17 @@
 int
 width_tags(Bar *bar, BarArg *a)
 {
+    Client *c;
+	Monitor *m = bar->mon;
 	int w, i, tw;
+    char img_icon;
 
 	for (w = 0, i = 0; i < NUMTAGS; i++) {
-		tw = TEXTW(tagicon(bar->mon, i));
+		tw = TEXTW(tagicon(bar->mon, i, &img_icon));
+        if (img_icon) {
+    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
+            tw += c->icon->width;
+        }
 		if (tw > lrpad)
 			w += tw;
 	}
@@ -19,7 +26,7 @@ draw_tags(Bar *bar, BarArg *a)
 	int invert;
 	int w, x = a->x;
 	unsigned int i, occ = 0, urg = 0;
-	char *icon;
+	char *icon, img_icon;
 	Client *c;
 	Monitor *m = bar->mon;
 
@@ -30,9 +37,15 @@ draw_tags(Bar *bar, BarArg *a)
 	}
 	for (i = 0; i < NUMTAGS; i++) {
 
-		icon = tagicon(bar->mon, i);
+    	for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
+
+		icon = tagicon(bar->mon, i, &img_icon);
 		invert = 0;
 		w = TEXTW(icon);
+
+        if (img_icon)
+            w += c->icon->width;
+            
 		if (w <= lrpad)
 			continue;
 		drw_setscheme(drw, scheme[
@@ -44,10 +57,18 @@ draw_tags(Bar *bar, BarArg *a)
 		]);
         if (x == a->x)
 		    drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
-		drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
+
+        if (img_icon) {
+		    drw_text(drw, x + BAR_OFFSET + c->icon->width, a->y, w, a->h, lrpad / 2, icon, invert, False);
+		    drw_img(drw, x + BAR_OFFSET + c->icon->width/2, a->y, c->icon, tmpicon);
+        }
+        else
+		    drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
+
 		drawindicator(m, NULL, occ, x, a->y, w, a->h, i, -1, invert, tagindicatortype);
 		if (ulineall || m->tagset[m->seltags] & 1 << i)
 			drw_rect(drw, x + ulinepad + BAR_OFFSET, bh - ulinestroke - ulinevoffset, w - (ulinepad * 2), ulinestroke, 1, 0);
+
 		x += w;
 	}
 
@@ -57,14 +78,20 @@ draw_tags(Bar *bar, BarArg *a)
 int
 click_tags(Bar *bar, Arg *arg, BarArg *a)
 {
+    Client *c;
+	Monitor *m = bar->mon;
 	int i = 0, x = lrpad / 2;
-	char icon[30];
+	char icon[30], img_icon;
 
 	do {
-		strcpy(icon, tagicon(bar->mon, i));
+		strcpy(icon, tagicon(bar->mon, i, &img_icon));
 		if (icon[0] == 0)
 			++i;
 		x += TEXTW(icon);
+        if (img_icon) {
+    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
+            x += c->icon->width;
+        }
 	} while (a->x >= x && ++i < NUMTAGS);
 	if (i < NUMTAGS) {
 		arg->ui = 1 << i;

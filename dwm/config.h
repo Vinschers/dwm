@@ -53,25 +53,15 @@ static char *tagicons[][NUMTAGS] = {
 };
 
 static char occupiedicons[][3][50] = {
-	{ "Firefox", 		"",    "#FF9400" },
-	{ "Chromium", 		"",    "#6199F6" },
 	{ "vim",		    "",    "#019833" },
     { "htop",           "",    "#BA9FD7" },
     { "gtop",           "",    "#BA9FD7" },
-	{ "alacritty", 		"",    "#FFFFFF" },
-	{ "st", 		    "",    "#FFFFFF" },
-	{ "Discord", 		"",    "#5865F2" },
 	{ "simple-scan", 	"",    "" },
 	{ "zathura", 		"",    "#DC1D00" },
 	{ "okular", 		"",    "#DC1D00" },
-	{ "mpv", 		    "",    "" },
 	{ "sxiv", 		    "",    "" },
-	{ "torrent", 		"",    "#00FFFF" },
-	{ "minecraft", 		"",    "#478520" },
-	{ "spotify", 		"",    "#1DB954" },
 	{ "spotui", 		"",    "#1DB954" },
 	{ "zotero",		    "📚",   "" },
-	{ "keepass",		"",    "#539739" },
 	{ "webcam",		    "犯",   "" },
 };
 
