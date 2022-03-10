@@ -60,6 +60,7 @@ static char occupiedicons[][3][50] = {
 	{ "okular", 		"",    "#DC1D00" },
 	{ "sxiv", 		    "",    "" },
 	{ "spotui", 		"",    "#1DB954" },
+	{ "spotify", 		"",    "#1DB954" },
 	{ "zotero",		    "📚",   "" },
 	{ "webcam",		    "犯",   "" },
 };
