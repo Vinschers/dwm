@@ -56,6 +56,7 @@ static char *tagicons[][NUMTAGS] = {
 
 static char occupiedicons[][3][50] = {
 	{ "vim",		    "",    "#019833" },
+	{ "neovim",		    "",    "#019833" },
     { "htop",           "",    "#BA9FD7" },
     { "gtop",           "",    "#BA9FD7" },
 	{ "zathura", 		"",    "#DC1D00" },

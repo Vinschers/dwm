@@ -427,7 +427,6 @@ static int (*xerrorxlib)(Display *, XErrorEvent *);
 static unsigned int numlockmask = 0;
 static void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
-	[ButtonRelease] = keyrelease,
 	[ClientMessage] = clientmessage,
 	[ConfigureRequest] = configurerequest,
 	[ConfigureNotify] = configurenotify,
@@ -436,7 +435,6 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
-	[KeyRelease] = keyrelease,
 	[MappingNotify] = mappingnotify,
 	[MapRequest] = maprequest,
 	[MotionNotify] = motionnotify,
@@ -2243,13 +2241,17 @@ void
 togglebar(const Arg *arg)
 {
 	Bar *bar;
-	selmon->showbar = (selmon->showbar == 2 ? 1 : !selmon->showbar);
-	updatebarpos(selmon);
-	for (bar = selmon->bar; bar; bar = bar->next)
-		XMoveResizeWindow(dpy, bar->win, bar->bx, bar->by, bar->bw, bar->bh);
-	if (!selmon->showbar && systray)
-		XMoveWindow(dpy, systray->win, -32000, -32000);
-	arrange(selmon);
+    Monitor *m;
+
+    for (m = mons; m; m = m->next) {
+	    m->showbar = (m->showbar == 2 ? 1 : !m->showbar);
+	    updatebarpos(m);
+	    for (bar = m->bar; bar; bar = bar->next)
+		    XMoveResizeWindow(dpy, bar->win, bar->bx, bar->by, bar->bw, bar->bh);
+	    if (!m->showbar && systray)
+		    XMoveWindow(dpy, systray->win, -32000, -32000);
+	    arrange(m);
+    }
 }
 
 void
