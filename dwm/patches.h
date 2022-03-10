@@ -65,7 +65,7 @@
  * taps into the many layout options that flextile-deluxe offers to produce a window
  * title section in the bar that is representative of what is shown on screen.
  */
-#define BAR_FLEXWINTITLE_PATCH 0
+#define BAR_FLEXWINTITLE_PATCH 1
 
 /* This patch adds a context menu for layout switching.
  *   - xmenu needs to be installed.
@@ -150,7 +150,7 @@
 /* The systray patch adds systray for the status bar.
  * https://dwm.suckless.org/patches/systray/
  */
-#define BAR_SYSTRAY_PATCH 0
+#define BAR_SYSTRAY_PATCH 1
 
 /* Show tag symbols in the bar. */
 #define BAR_TAGS_PATCH 1
@@ -346,6 +346,13 @@
  * https://dwm.suckless.org/patches/barpadding/
  */
 #define BAR_PADDING_PATCH 1
+
+/* Same as barpadding patch but specifically tailored for the vanitygaps patch in that the outer
+ * bar padding is derived from the vanitygaps settings. In addition to this the bar padding is
+ * toggled in unison when vanitygaps are toggled. Increasing or decreasing gaps during runtime
+ * will not affect the bar padding.
+ */
+#define BAR_PADDING_VANITYGAPS_PATCH 0
 
 /* This patch adds simple markup for status messages using pango markup.
  * This depends on the pango library v1.44 or greater.
@@ -964,6 +971,19 @@
  */
 #define SIZEHINTS_RULED_PATCH 0
 
+/* This patch makes dwm obey even "soft" sizehints for new clients. The isfreesize
+ * version is similar to the sizehints ruled patch except it allows you to specify
+ * via client rules which clients this should apply to. Soft sizehints applies by
+ * default to clients that are not ruled, and will be disabled by default for clients
+ * that are.
+ *
+ * Example client rule enabling soft sizehints:
+ *    - RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .isfreesize = 1)
+ *
+ * https://dwm.suckless.org/patches/sizehints/
+ */
+#define SIZEHINTS_ISFREESIZE_PATCH 0
+
 /* In a multi-head setup monitor 0 is by default the primary screen, with the left and right
  * screen being monitor 1 and 2 respectively. This patch sorts screens left to right (or
  * top to bottom in a vertical layout) which aims to address some inconsistencies when it
@@ -1109,6 +1129,13 @@
  * https://github.com/bakkeby/patches/blob/master/dwm/dwm-tagswapmon-6.2.diff
  */
 #define TAGSWAPMON_PATCH 0
+
+/* Sync tag actions across all monitors.
+ * This is comparable to a sort of pseudo-desktop environment.
+ * Also refer to the desktop patch:
+ * https://github.com/bakkeby/patches/blob/master/dwm/dwm-desktop-6.3.diff
+ */
+#define TAGSYNC_PATCH 0
 
 /* This patch can be useful to the touchpad users because it allows to
  * resize windows using Mod + two-finger scroll. It is useful when
@@ -1308,4 +1335,3 @@
  * This can be optionally disabled in favour of other layouts.
  */
 #define MONOCLE_LAYOUT 1
-

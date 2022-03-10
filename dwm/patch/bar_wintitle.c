@@ -10,7 +10,6 @@ draw_wintitle(Bar *bar, BarArg *a)
 	int x = a->x + lrpad / 2, w = a->w - lrpad / 2;
 	Monitor *m = bar->mon;
 	Client *c = m->sel;
-	int pad = lrpad / 2;
 
 	if (!c) {
 		drw_setscheme(drw, scheme[SchemeTitleNorm]);
@@ -18,12 +17,31 @@ draw_wintitle(Bar *bar, BarArg *a)
 		return 0;
 	}
 
+	int tpad = lrpad / 2;
+	int ipad = c->icon ? c->icw + ICONSPACING : 0;
+	int tx = x;
+	int tw = w;
+
 	drw_setscheme(drw, scheme[m == selmon ? SchemeTitleSel : SchemeTitleNorm]);
 	XSetErrorHandler(xerrordummy);
 
-	drw_text(drw, x, a->y, w, a->h, pad + (c->icon ? c->icon->width + ICONSPACING : 0), c->name, 0, False);
-	if (c->icon)
-		drw_img(drw, x + pad, a->y + (a->h - c->icon->height) / 2, c->icon, tmpicon);
+	if (w <= TEXTW("A") - lrpad + tpad) // reduce text padding if wintitle is too small
+		tpad = (w - TEXTW("A") + lrpad < 0 ? 0 : (w - TEXTW("A") + lrpad) / 2);
+
+	XSetForeground(drw->dpy, drw->gc, drw->scheme[ColBg].pixel);
+	XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, a->y, w, a->h);
+
+
+	tx += tpad;
+	tw -= lrpad;
+
+	if (ipad) {
+		drw_pic(drw, tx, a->y + (a->h - c->ich) / 2, c->icw, c->ich, c->icon);
+		tx += ipad;
+		tw -= ipad;
+	}
+
+	drw_text(drw, tx, a->y, tw, a->h, 0, c->name, 0, False);
 
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);

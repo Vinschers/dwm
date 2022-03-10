@@ -10,6 +10,9 @@
 #include "bar_winicon.h"
 #include "bar_tags.h"
 #include "bar_wintitle.h"
+#include "bar_flexwintitle.h"
+#include "bar_systray.h"
+#include "bar_wintitleactions.h"
 
 /* Other patches */
 #include "autostart.h"

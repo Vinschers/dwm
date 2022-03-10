@@ -11,8 +11,8 @@ width_tags(Bar *bar, BarArg *a)
 	for (w = 0, i = 0; i < NUMTAGS; i++) {
 		tw = TEXTW(tagicon(bar->mon, i, &img_icon));
         if (img_icon) {
-    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
-            tw += c->icon->width;
+    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next) {}
+            tw += c->icw;
         }
 		if (tw > lrpad)
 			w += tw;
@@ -37,14 +37,14 @@ draw_tags(Bar *bar, BarArg *a)
 	}
 	for (i = 0; i < NUMTAGS; i++) {
 
-    	for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
+    	for (c = m->clients; c && !(c->tags & 1 << i); c = c->next) {}
 
 		icon = tagicon(bar->mon, i, &img_icon);
 		invert = 0;
 		w = TEXTW(icon);
 
         if (img_icon)
-            w += c->icon->width;
+            w += c->icw;
             
 		if (w <= lrpad)
 			continue;
@@ -58,8 +58,8 @@ draw_tags(Bar *bar, BarArg *a)
 		drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
 
         if (img_icon) {
-		    drw_text(drw, x + BAR_OFFSET + c->icon->width, a->y, TEXTW(icon), a->h, lrpad / 2, icon, invert, False);
-		    drw_img(drw, x + BAR_OFFSET + lrpad / 2, a->y + (a->h - c->icon->height)/2, c->icon, tmpicon);
+		    drw_text(drw, x + BAR_OFFSET + c->icw, a->y, TEXTW(icon), a->h, lrpad / 2, icon, invert, False);
+		    drw_pic(drw, x + BAR_OFFSET + lrpad / 2, a->y + (a->h - c->ich)/2, c->icw, c->ich, c->icon);
         }
         else {
 		    drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
@@ -90,8 +90,8 @@ click_tags(Bar *bar, Arg *arg, BarArg *a)
             continue;
 		x += TEXTW(icon);
         if (img_icon) {
-    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next);
-            x += c->icon->width;
+    	    for (c = m->clients; c && !(c->tags & 1 << i); c = c->next) {}
+            x += c->icw;
         }
 	} while (a->x >= x && ++i < NUMTAGS);
 	if (i < NUMTAGS) {

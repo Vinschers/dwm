@@ -26,6 +26,8 @@ static const int sidepad            = 12;       /* horizontal padding of bar */
 static const int statusmon               = -1;
 static const int horizpadbar             = 2;   /* horizontal padding for statusbar */
 static const int vertpadbar              = 0;   /* vertical padding for statusbar */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int showsystray             = 1;   /* 0 means no systray */
 static const unsigned int ulinepad = 5;         /* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke  = 2;     /* thickness / height of the underline */
 static const unsigned int ulinevoffset = 0;     /* how far above the bottom of the bar the line should appear */
@@ -113,7 +115,7 @@ static const BarRule barrules[] = {
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_tags,              draw_tags,              click_tags,              "tags" },
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,          draw_ltsymbol,          click_ltsymbol,          "layout" },
 	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,          draw_status2d,          click_statuscmd,         "status2d" },
-	{ -1,        0,     BAR_ALIGN_NONE,   width_wintitle,          draw_wintitle,          click_wintitle,          "wintitle" },
+	{ -1,        0,     BAR_ALIGN_NONE,   width_flexwintitle,      draw_flexwintitle,      click_flexwintitle,      "flexwintitle" },
 };
 
 /* layout(s) */
@@ -121,6 +123,7 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int nstack      = 0;    /* number of clients in primary stack area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
+static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 static const int decorhints  = 1;    /* 1 means respect decoration hints */
 
 #define FORCE_VSPLIT 1
@@ -226,6 +229,7 @@ static Key keys[] = {
 	{ MODKEY|Mod4Mask,              XK_0,          togglegaps,             {0} },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_0,          defaultgaps,            {0} },
 	{ MODKEY,                       XK_Tab,        view,                   {0} },
+	{ MODKEY|ControlMask,           XK_z,          showhideclient,         {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,             {0} },
 	{ MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
 	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
@@ -283,6 +287,8 @@ static Button buttons[] = {
 	/* click                event mask           button          function        argument */
 	{ ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,                   Button3,        setlayout,      {.v = &layouts[2]} },
+	{ ClkWinTitle,          0,                   Button1,        togglewin,      {0} },
+	{ ClkWinTitle,          0,                   Button3,        showhideclient, {0} },
 	{ ClkWinTitle,          0,                   Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,                   Button1,        sigstatusbar,   {.i = 1 } },
 	{ ClkStatusText,        0,                   Button2,        sigstatusbar,   {.i = 2 } },

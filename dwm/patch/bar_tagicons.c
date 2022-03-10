@@ -116,7 +116,7 @@ getoccupiedicon(Monitor *m, int tag, char *img_icon)
 	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowername[200], currentname[200];
     unsigned char hasicon = 0;
 
-    for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next);
+    for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next) {}
 	if (!c)
 		return NULL;
 

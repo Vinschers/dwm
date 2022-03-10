@@ -73,6 +73,7 @@ drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h
 	drw->h = h;
 
 	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
+	drw->picture = XRenderCreatePicture(dpy, drw->drawable, XRenderFindVisualFormat(dpy, DefaultVisual(dpy, screen)), 0, NULL);
 	drw->gc = XCreateGC(dpy, root, 0, NULL);
 	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
 
@@ -87,14 +88,18 @@ drw_resize(Drw *drw, unsigned int w, unsigned int h)
 
 	drw->w = w;
 	drw->h = h;
+	if (drw->picture)
+		XRenderFreePicture(drw->dpy, drw->picture);
 	if (drw->drawable)
 		XFreePixmap(drw->dpy, drw->drawable);
 	drw->drawable = XCreatePixmap(drw->dpy, drw->root, w, h, DefaultDepth(drw->dpy, drw->screen));
+	drw->picture = XRenderCreatePicture(drw->dpy, drw->drawable, XRenderFindVisualFormat(drw->dpy, DefaultVisual(drw->dpy, drw->screen)), 0, NULL);
 }
 
 void
 drw_free(Drw *drw)
 {
+	XRenderFreePicture(drw->dpy, drw->picture);
 	XFreePixmap(drw->dpy, drw->drawable);
 	XFreeGC(drw->dpy, drw->gc);
 	drw_fontset_free(drw->fonts);
@@ -309,8 +314,8 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 		if (utf8strlen) {
 			drw_font_getexts(usedfont, utf8str, utf8strlen, &ew, NULL);
 			/* shorten text if necessary */
-			for (len = MIN(utf8strlen, sizeof(buf) - 1); len && ew > w; len--)
-				drw_font_getexts(usedfont, utf8str, len, &ew, NULL);
+			for (len = MIN(utf8strlen, sizeof(buf) - 1); len && ew > w; drw_font_getexts(usedfont, utf8str, len, &ew, NULL))
+				len--;
 
 			if (len) {
 				memcpy(buf, utf8str, len);
