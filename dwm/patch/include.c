@@ -12,6 +12,7 @@
 #include "bar_wintitle.c"
 #include "bar_flexwintitle.c"
 #include "bar_systray.c"
+#include "bar_holdbar.c"
 #include "bar_wintitleactions.c"
 
 /* Other patches */
