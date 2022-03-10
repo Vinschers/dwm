@@ -174,8 +174,6 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
-#define HOLDKEY 0xffeb // replace 0 with the keysym to activate holdbar
-
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 #define SHICMD(cmd) { .v = (const char*[]){ "/bin/sh", "-e", cmd, NULL } }
@@ -234,7 +232,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,        view,                   {0} },
 	{ MODKEY|ControlMask,           XK_z,          showhideclient,         {0} },
 	{ MODKEY|ShiftMask,             XK_c,          killclient,             {0} },
-	{ 0,                            HOLDKEY,       holdbar,                {0} },
 	{ MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
 	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,          setlayout,              {.v = &layouts[1]} },
