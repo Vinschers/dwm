@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <string.h>
 
 char *
 geticon(Monitor *m, int tag, int iconset)
@@ -108,6 +109,20 @@ change_scheme(char *color, Clr *scheme)
     scheme->color.blue = blue << 8;
 }
 
+unsigned char
+containsstr(char *str1, char *str2)
+{
+    char *ptr;
+
+    for (ptr = str1; *ptr; ++ptr) {
+        if (*ptr == ' ' || ptr == str1)
+            if (strncmp(str2, ptr, strlen(str2)) == 0)
+                return 1;
+    }
+
+    return 0;
+}
+
 char *
 getoccupiedicon(Monitor *m, int tag, char *img_icon)
 {
@@ -128,7 +143,7 @@ getoccupiedicon(Monitor *m, int tag, char *img_icon)
 	for (i = 0; i < LENGTH(occupiedicons); ++i) {
 		tolowerstr(currentname, occupiedicons[i][0]);
 
-		if (strstr(lowername, currentname)) {
+		if (containsstr(lowername, currentname)) {
             hasicon = 1;
 			icon = occupiedicons[i][1];
 			appendtagsuperscript(icon, tagsuperscript);
