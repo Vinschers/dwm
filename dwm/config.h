@@ -163,6 +163,14 @@ static const Layout layouts[] = {
 	{ NULL,       NULL,             {0} },
 };
 
+static const unsigned int defaultlayouts[] = {
+    0,  /* 0 clients */
+    2,  /* 1 client */
+    0,  /* 2 clients */
+    18,  /* 3 clients */
+    24, /* >= 4 clients */
+};
+
 /* key definitions */
 #define MODKEY Mod4Mask
 #define ALTKEY Mod1Mask

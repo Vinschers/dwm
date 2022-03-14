@@ -391,6 +391,7 @@ static void unmapnotify(XEvent *e);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updateclientlist(void);
+static Bool updatedefaultlayout(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
@@ -594,6 +595,8 @@ attach(Client *c)
 {
 	c->next = c->mon->clients;
 	c->mon->clients = c;
+
+    updatedefaultlayout();
 }
 
 void
@@ -930,7 +933,7 @@ createmon(void)
 	m->gappov = gappov;
 	for (mi = 0, mon = mons; mon; mon = mon->next, mi++); // monitor index
 	m->index = mi;
-	m->lt[0] = &layouts[0];
+	m->lt[0] = &layouts[defaultlayouts[0]];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 
@@ -1014,6 +1017,8 @@ detach(Client *c)
 
 	for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next);
 	*tc = c->next;
+
+    updatedefaultlayout();
 }
 
 void
@@ -1229,6 +1234,7 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
+		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1448,6 +1454,7 @@ killclient(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
+
 	if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0, 0, 0))
 	{
 		XGrabServer(dpy);
@@ -2197,6 +2204,33 @@ sigchld(int unused)
 	while (0 < waitpid(-1, NULL, WNOHANG));
 }
 
+Bool
+updatedefaultlayout()
+{
+    int clients = 0;
+    Client *c;
+    Layout *newlayout;
+    Arg layoutarg;
+
+    for(clients = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), ++clients) {}
+
+    if (clients >= LENGTH(defaultlayouts))
+        clients = LENGTH(defaultlayouts) - 1;
+    else if (clients < 0)
+        clients = 0;
+
+    newlayout = (Layout *)&layouts[defaultlayouts[clients]];
+
+    if (selmon->lt[selmon->sellt] != newlayout)
+    {
+        layoutarg.v = newlayout;
+        setlayout(&layoutarg);
+        return False;
+    }
+
+    return True;
+}
+
 void
 spawn(const Arg *arg)
 {
@@ -2205,6 +2239,7 @@ spawn(const Arg *arg)
 
 	if (fork() == 0)
 	{
+
 		if (dpy)
 			close(ConnectionNumber(dpy));
 
@@ -2226,6 +2261,8 @@ tag(const Arg *arg)
 		arrange(selmon);
 		if ((arg->ui & TAGMASK) != selmon->tagset[selmon->seltags])
 			view(arg);
+
+        updatedefaultlayout();
 	}
 }
 
@@ -2235,6 +2272,8 @@ tagmon(const Arg *arg)
 	if (!selmon->sel || !mons->next)
 		return;
 	sendmon(selmon->sel, dirtomon(arg->i));
+
+    updatedefaultlayout();
 }
 
 void
@@ -2336,6 +2375,7 @@ unfocus(Client *c, int setfocus, Client *nextfocus)
 	if (!c)
 		return;
 	grabbuttons(c, 0);
+	XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
 	if (setfocus) {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
