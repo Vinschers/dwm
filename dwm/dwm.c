@@ -1055,9 +1055,9 @@ drawbar(Monitor *m)
 {
 	Bar *bar;
 	
-	if (m->showbar)
-		for (bar = m->bar; bar; bar = bar->next)
-			drawbarwin(bar);
+    if (m->showbar)
+	    for (bar = m->bar; bar; bar = bar->next)
+		    drawbarwin(bar);
 }
 
 void
@@ -1454,7 +1454,6 @@ killclient(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
-
 	if (!sendevent(selmon->sel->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0, 0, 0))
 	{
 		XGrabServer(dpy);
@@ -1526,7 +1525,7 @@ manage(Window w, XWindowAttributes *wa)
 	grabbuttons(c, 0);
 
 	if (!c->isfloating)
-		c->isfloating = c->oldstate = trans != None || c->isfixed;
+		c->isfloating = c->oldstate = t || c->isfixed;
 	if (c->isfloating) {
 		XRaiseWindow(dpy, c->win);
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
@@ -1771,6 +1770,23 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
+	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
+		|| &monocle == c->mon->lt[c->mon->sellt]->arrange
+		|| (&deck == c->mon->lt[c->mon->sellt]->arrange &&
+			c->mon->nmaster == 0)
+		|| (&flextile == c->mon->lt[c->mon->sellt]->arrange && (
+			(c->mon->ltaxis[LAYOUT] == NO_SPLIT &&
+			 c->mon->ltaxis[MASTER] == MONOCLE) ||
+			(c->mon->ltaxis[STACK] == MONOCLE &&
+			 c->mon->nmaster == 0)))
+		)
+		&& !c->isfullscreen
+		&& !c->isfloating
+		&& c->mon->lt[c->mon->sellt]->arrange) {
+		c->w = wc.width += c->bw * 2;
+		c->h = wc.height += c->bw * 2;
+		wc.border_width = 0;
+	}
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
 	XSync(dpy, False);
