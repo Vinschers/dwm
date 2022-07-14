@@ -2275,10 +2275,13 @@ tag(const Arg *arg)
 		selmon->sel->tags = arg->ui & TAGMASK;
 		focus(NULL);
 		arrange(selmon);
-		if ((arg->ui & TAGMASK) != selmon->tagset[selmon->seltags])
-			view(arg);
-
         updatedefaultlayout();
+
+		if ((arg->ui & TAGMASK) != selmon->tagset[selmon->seltags])
+        {
+			view(arg);
+            updatedefaultlayout();
+        }
 	}
 }
 
