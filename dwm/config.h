@@ -22,6 +22,7 @@ static const int sidepad                = 12;       /* horizontal padding of bar
 
 #define ICONSIZE 15    /* icon size */
 #define ICONSPACING 5  /* space between icon and title */
+#define FLEXWINTITLE_BORDERS 0       // 0 = off, 1 = on
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = -1;

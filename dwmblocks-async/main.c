@@ -12,9 +12,7 @@
 
 #define POLL_INTERVAL 50
 #define LEN(arr) (sizeof(arr) / sizeof(arr[0]))
-#define BLOCK(icon, cmd, interval, signal) {icon, "echo \"$(" cmd ")\"", interval, signal}
 typedef struct {
-	const char *icon;
 	const char *command;
 	const unsigned int interval;
 	const unsigned int signal;
@@ -49,14 +47,39 @@ void closePipe(int* pipe) {
 	close(pipe[1]);
 }
 
+const char * getBG(int i) {
+    return bgcolors[i % LEN(bgcolors)];
+}
+
+const char * getFG(int i) {
+    return fgcolors[i % LEN(fgcolors)];
+}
+
+void setFG(char *command, int i) {
+    sprintf(command, "echo \"$(%s \"%s\")\"", blocks[i].command, getFG(i));
+}
+
+void setBG(char *new, int i) {
+    char divisor[50];
+    const char *bg = getBG(i);
+
+    sprintf(divisor, "^t^^v^^c%s^^t^^b%s^^v^ ", bg, bg);
+    strcat(new, divisor);
+}
+
 void execBlock(int i, const char* button) {
+    char command[30];
+
+    setFG(command, i);
+
 	if (fork() == 0) {
 		close(pipes[i][0]);
 		dup2(pipes[i][1], STDOUT_FILENO);
 
 		if (button)
 			setenv("BUTTON", button, 1);
-		execl("/bin/sh", "sh", "-c", blocks[i].command);
+
+		execl("/bin/sh", "sh", "-c", command);
 		close(pipes[i][1]);
 	}
 }
@@ -75,9 +98,12 @@ int getStatus(char* new, char* old) {
         if (!strlen(outputs[i]))
             continue;
 
-		if (strlen(new))
+        if (strlen(new))
 			strcat(new, DELIMITER);
-		strcat(new, blocks[i].icon);
+        else
+            strcat(new, "^v^");
+
+        setBG(new, i);
 		strcat(new, outputs[i]);
 	}
 	return strcmp(new, old);

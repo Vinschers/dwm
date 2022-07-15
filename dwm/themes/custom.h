@@ -2,6 +2,9 @@
 #define BAR_FG "#fcfdfe"
 #define NORMAL_BORDER "#282737"
 #define SELECTED_BORDER "#61afef"
+#define UNSELECTED_WINDOW "#132738"
+#define ACTIVE_GROUP "#132738"
+#define SELECTED_WINDOW "#212171"
 
 static char c000000[]                    = "#000000"; // placeholder value
 
@@ -40,10 +43,6 @@ static char urgbgcolor[]                 = "#f7575d";
 static char urgbordercolor[]             = "#f7575d";
 static char urgfloatcolor[]              = "#f7575d";
 
-#define UNSELECTED_WINDOW "#000033"
-// #define ACTIVE_GROUP "#000044"
-#define ACTIVE_GROUP "#132738"
-#define SELECTED_WINDOW "#212171"
 
 static char normTTBbgcolor[]             = UNSELECTED_WINDOW;
 static char normLTRbgcolor[]             = UNSELECTED_WINDOW;
