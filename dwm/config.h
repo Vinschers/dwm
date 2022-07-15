@@ -3,21 +3,21 @@
 #include <X11/XF86keysym.h>
 
 /* appearance */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const unsigned int gappih    = 20;       /* horiz inner gap between windows */
-static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
-static const unsigned int gappoh    = 6;       /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 12;       /* vert outer gap between windows and screen edge */
-static const int smartgaps_fact          = 1;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
-static const char autostartblocksh[]     = "autostart_blocking.sh";
-static const char autostartsh[]          = "autostart.sh";
-static const char dwmdir[]               = "dwm";
-static const char localshare[]           = ".local/share";
-static const int showbar            = 0;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-static const int vertpad            = 12;       /* vertical padding of bar */
-static const int sidepad            = 12;       /* horizontal padding of bar */
+static const unsigned int borderpx      = 3;        /* border pixel of windows */
+static const unsigned int snap          = 32;       /* snap pixel */
+static const unsigned int gappih        = 20;       /* horiz inner gap between windows */
+static const unsigned int gappiv        = 10;       /* vert inner gap between windows */
+static const unsigned int gappoh        = 6;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov        = 12;       /* vert outer gap between windows and screen edge */
+static const int smartgaps_fact         = 1;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
+static const char autostartblocksh[]    = "autostart_blocking.sh";
+static const char autostartsh[]         = "autostart.sh";
+static const char dwmdir[]              = "dwm";
+static const char localshare[]          = ".local/share";
+static const int showbar                = 0;        /* 0 means no bar */
+static const int topbar                 = 1;        /* 0 means bottom bar */
+static const int vertpad                = 12;       /* vertical padding of bar */
+static const int sidepad                = 12;       /* horizontal padding of bar */
 
 #define ICONSIZE 15    /* icon size */
 #define ICONSPACING 5  /* space between icon and title */
@@ -28,10 +28,10 @@ static const int horizpadbar             = 2;   /* horizontal padding for status
 static const int vertpadbar              = 0;   /* vertical padding for statusbar */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
-static const unsigned int ulinepad = 5;         /* horizontal padding between the underline and tag */
-static const unsigned int ulinestroke  = 2;     /* thickness / height of the underline */
-static const unsigned int ulinevoffset = 0;     /* how far above the bottom of the bar the line should appear */
-static const int ulineall = 0;                  /* 1 to show underline on all tags, 0 for just the active ones */
+static const unsigned int ulinepad       = 5;   /* horizontal padding between the underline and tag */
+static const unsigned int ulinestroke    = 2;   /* thickness / height of the underline */
+static const unsigned int ulinevoffset   = 0;   /* how far above the bottom of the bar the line should appear */
+static const int ulineall                = 0;   /* 1 to show underline on all tags, 0 for just the active ones */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_NONE;
@@ -45,7 +45,7 @@ static const char dmenufont[]       = "Source Code Pro:size=12";
 // static const unsigned int baralpha = 0xd0;
 // static const unsigned int borderalpha = OPAQUE;
 
-#include "themes/vinschers.h"
+#include "themes/custom.h"
 
 /* tagging: refer to https://github.com/bakkeby/patches/wiki/tagicons */
 static char *tagicons[][NUMTAGS] = {

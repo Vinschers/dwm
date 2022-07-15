@@ -40,39 +40,43 @@ static char urgbgcolor[]                 = "#f7575d";
 static char urgbordercolor[]             = "#f7575d";
 static char urgfloatcolor[]              = "#f7575d";
 
-static char normTTBbgcolor[]             = "#000033";
-static char normLTRbgcolor[]             = "#330033";
-static char normMONObgcolor[]            = "#330000";
-static char normGRIDbgcolor[]            = "#003300";
-static char normGRD1bgcolor[]            = "#003300";
-static char normGRD2bgcolor[]            = "#003300";
-static char normGRDMbgcolor[]            = "#506600";
-static char normHGRDbgcolor[]            = "#b96600";
-static char normDWDLbgcolor[]            = "#003333";
-static char normSPRLbgcolor[]            = "#333300";
-static char normfloatbgcolor[]           = "#115577";
-static char actTTBbgcolor[]              = "#000044";
-static char actLTRbgcolor[]              = "#440044";
-static char actMONObgcolor[]             = "#440000";
-static char actGRIDbgcolor[]             = "#004400";
-static char actGRD1bgcolor[]             = "#004400";
-static char actGRD2bgcolor[]             = "#004400";
-static char actGRDMbgcolor[]             = "#507711";
-static char actHGRDbgcolor[]             = "#b97711";
-static char actDWDLbgcolor[]             = "#004444";
-static char actSPRLbgcolor[]             = "#444400";
-static char actfloatbgcolor[]            = "#116688";
-static char selTTBbgcolor[]              = "#212171";
-static char selLTRbgcolor[]              = "#550055";
-static char selMONObgcolor[]             = "#550000";
-static char selGRIDbgcolor[]             = "#005500";
-static char selGRD1bgcolor[]             = "#005500";
-static char selGRD2bgcolor[]             = "#005500";
-static char selGRDMbgcolor[]             = "#508822";
-static char selHGRDbgcolor[]             = "#b98822";
-static char selDWDLbgcolor[]             = "#005555";
-static char selSPRLbgcolor[]             = "#555500";
-static char selfloatbgcolor[]            = "#117799";
+#define UNSELECTED_WINDOW "#000033"
+#define ACTIVE_GROUP "#000044"
+#define SELECTED_WINDOW "#212171"
+
+static char normTTBbgcolor[]             = UNSELECTED_WINDOW;
+static char normLTRbgcolor[]             = UNSELECTED_WINDOW;
+static char normMONObgcolor[]            = UNSELECTED_WINDOW;
+static char normGRIDbgcolor[]            = UNSELECTED_WINDOW;
+static char normGRD1bgcolor[]            = UNSELECTED_WINDOW;
+static char normGRD2bgcolor[]            = UNSELECTED_WINDOW;
+static char normGRDMbgcolor[]            = UNSELECTED_WINDOW;
+static char normHGRDbgcolor[]            = UNSELECTED_WINDOW;
+static char normDWDLbgcolor[]            = UNSELECTED_WINDOW;
+static char normSPRLbgcolor[]            = UNSELECTED_WINDOW;
+static char normfloatbgcolor[]           = UNSELECTED_WINDOW;
+static char actTTBbgcolor[]              = ACTIVE_GROUP;
+static char actLTRbgcolor[]              = ACTIVE_GROUP;
+static char actMONObgcolor[]             = ACTIVE_GROUP;
+static char actGRIDbgcolor[]             = ACTIVE_GROUP;
+static char actGRD1bgcolor[]             = ACTIVE_GROUP;
+static char actGRD2bgcolor[]             = ACTIVE_GROUP;
+static char actGRDMbgcolor[]             = ACTIVE_GROUP;
+static char actHGRDbgcolor[]             = ACTIVE_GROUP;
+static char actDWDLbgcolor[]             = ACTIVE_GROUP;
+static char actSPRLbgcolor[]             = ACTIVE_GROUP;
+static char actfloatbgcolor[]            = ACTIVE_GROUP;
+static char selTTBbgcolor[]              = SELECTED_WINDOW;
+static char selLTRbgcolor[]              = SELECTED_WINDOW;
+static char selMONObgcolor[]             = SELECTED_WINDOW;
+static char selGRIDbgcolor[]             = SELECTED_WINDOW;
+static char selGRD1bgcolor[]             = SELECTED_WINDOW;
+static char selGRD2bgcolor[]             = SELECTED_WINDOW;
+static char selGRDMbgcolor[]             = SELECTED_WINDOW;
+static char selHGRDbgcolor[]             = SELECTED_WINDOW;
+static char selDWDLbgcolor[]             = SELECTED_WINDOW;
+static char selSPRLbgcolor[]             = SELECTED_WINDOW;
+static char selfloatbgcolor[]            = SELECTED_WINDOW;
 
 static char *colors[][ColCount] = {
 	/*                       fg                bg                border                float */
