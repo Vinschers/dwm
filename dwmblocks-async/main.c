@@ -56,7 +56,7 @@ const char * getFG(int i) {
 }
 
 void setFG(char *command, int i) {
-    sprintf(command, "echo \"$(%s \"%s\")\"", blocks[i].command, getFG(i));
+    sprintf(command, "echo \"$(%s \"%s\" \"%s\")\"", blocks[i].command, getFG(i), getBG(i));
 }
 
 void setBG(char *new, int i) {
@@ -68,7 +68,7 @@ void setBG(char *new, int i) {
 }
 
 void execBlock(int i, const char* button) {
-    char command[30];
+    char command[50];
 
     setFG(command, i);
 
