@@ -49,28 +49,7 @@ gettagsuperscript(int tag)
 			return "⁹";
 	}
 
-	return 0;
-}
-
-void
-appendtagsuperscript(char *icon, char *tag)
-{
-	char *aftertag = icon;
-	unsigned char firstbyte = (unsigned char) *icon;
-
-	if (*(icon) == 0 || firstbyte >> 7 == 0)
-		aftertag += 1;
-	else if (firstbyte >> 5 == 6)
-		aftertag += 2;
-	else if (firstbyte >> 4 == 14)
-		aftertag += 3;
-	else if (firstbyte >> 3 == 30)
-		aftertag += 4;
-
-	for (; *tag; ++aftertag)
-		*aftertag = *(tag++);
-
-	*aftertag = 0;
+	return "";
 }
 
 unsigned char
@@ -146,9 +125,9 @@ getoccupiedicon(Monitor *m, int tag, char *img_icon)
 		if (containsstr(lowername, currentname)) {
             hasicon = 1;
 			icon = occupiedicons[i][1];
-			appendtagsuperscript(icon, tagsuperscript);
+            strcat(icon, tagsuperscript);
 
-            if (strlen(occupiedicons[i][2]))
+            if (occupiedicons[i][2][0] != '\0') // if there is a new color for the icon
                 change_scheme(occupiedicons[i][2], scheme[SchemeTagsNorm]);
 
 			break;
@@ -157,7 +136,7 @@ getoccupiedicon(Monitor *m, int tag, char *img_icon)
 
     if (!hasicon && c->icon) {
         *img_icon = 1;
-        return gettagsuperscript(tag);
+        return tagsuperscript;
     }
 
 	return icon;

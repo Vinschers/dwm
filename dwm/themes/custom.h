@@ -41,7 +41,8 @@ static char urgbordercolor[]             = "#f7575d";
 static char urgfloatcolor[]              = "#f7575d";
 
 #define UNSELECTED_WINDOW "#000033"
-#define ACTIVE_GROUP "#000044"
+// #define ACTIVE_GROUP "#000044"
+#define ACTIVE_GROUP "#132738"
 #define SELECTED_WINDOW "#212171"
 
 static char normTTBbgcolor[]             = UNSELECTED_WINDOW;

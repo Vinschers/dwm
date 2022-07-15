@@ -115,6 +115,23 @@
  */
 #define BAR_TAGGRID_PATCH 0
 
+/* Hover tag icons to see a preview of the windows on that tag.
+ *
+ * The patch depends on Imlib2 for icon scaling.
+ * You need to uncomment the corresponding line in config.mk to use the -lImlib2 library
+ *
+ * Arch Linux:
+ *     sudo pacman -S imlib2
+ * Debian:
+ *     sudo apt install libimlib2-dev
+ *
+ * As with the winicon patch you may want to consider adding the compiler flags of -O3 and
+ * -march=native to enable auto loop vectorize for better performance.
+ *
+ * https://dwm.suckless.org/patches/tag-previews/
+ */
+#define BAR_TAGPREVIEW_PATCH 1
+
 /* Show status in bar */
 #define BAR_STATUS_PATCH 1
 
@@ -844,6 +861,18 @@
  */
 #define PUSH_NO_MASTER_PATCH 0
 
+/* Variant of the named scratchpads patch allowing scratch keys to be added or removed
+ * on demand, allowing multiple scratchpad windows to be toggled into and out of view
+ * in unison, as well as including multi-monitor support.
+ *
+ * https://github.com/bakkeby/patches/wiki/renamedscratchpads
+ */
+#define RENAMED_SCRATCHPADS_PATCH 0
+
+/* Renamed scratchpads option to auto-hide scratchpads when moving to a different tag.
+ * This behaviour is similar to that of the (multiple) scratchpads patch. */
+#define RENAMED_SCRATCHPADS_AUTO_HIDE_PATCH 0
+
 /* Shifts all clients per tag to leftmost unoccupied tags.
  *
  * For example, if clients A, B, C are tagged on tags 1, 5, 9 respectively, when
@@ -922,6 +951,18 @@
  */
 #define SCRATCHPAD_ALT_1_PATCH 0
 
+/* This patch persists some settings across window manager restarts. These include but are not
+ * limited to:
+ *    - client's assigned tag(s) on which monitor
+ *    - the order of clients
+ *    - nmaster
+ *    - selected layout
+ *    - plus various additions depending on what other patches are used
+ *
+ * The above is not persisted across reboots, however.
+ */
+#define SEAMLESS_RESTART_PATCH 0
+
 /* As opposed to the original patch this only adds a rule option allowing fake fullscreen
  * to be enabled for applications when they start. This is intended to be used in combination
  * with the fakefullscreenclient patch and offers no practical functionality without it.
@@ -943,6 +984,30 @@
  * https://dwm.suckless.org/patches/setborderpx/
  */
 #define SETBORDERPX_PATCH 0
+
+/* Combines shifttag and shiftview. Basically moves the window to the next/prev tag and follows it.
+ * Also see the focusadjacenttag patch.
+ * https://dwm.suckless.org/patches/shift-tools/
+ */
+#define SHIFTBOTH_PATCH 0
+
+/* Swaps all the clients on the current tag with all the client on the next/prev tag.
+ * Depends on the swaptags patch.
+ * https://dwm.suckless.org/patches/shift-tools/
+ */
+#define SHIFTSWAPTAGS_PATCH 0
+
+/* Moves the current selected client to the adjacent tag.
+ * Also see the focusadjacenttag patch.
+ * https://dwm.suckless.org/patches/shift-tools/
+ */
+#define SHIFTTAG_PATCH 0
+
+/* Moves the current selected client to the adjacent tag that has at least one client, if none
+ * then it acts as shifttag.
+ * https://dwm.suckless.org/patches/shift-tools/
+ */
+#define SHIFTTAGCLIENTS_PATCH 0
 
 /* This patch adds keybindings for left and right circular shift through tags.
  * https://github.com/chau-bao-long/dotfiles/blob/master/suckless/dwm/shiftview.diff

@@ -30,7 +30,7 @@ togglegaps(const Arg *arg)
 		XMoveResizeWindow(dpy, bar->win, bar->bx, bar->by, bar->bw, bar->bh);
 
 	drawbarwin(systray->bar);
-	arrange(NULL);
+	arrange(selmon);
 }
 
 static void
@@ -120,7 +120,7 @@ static void
 getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv, unsigned int *nc)
 {
 	unsigned int n, oe, ie;
-	oe = ie = selmon->pertag->enablegaps[selmon->pertag->curtag];
+	oe = ie = m->pertag->enablegaps[m->pertag->curtag];
 	Client *c;
 
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
