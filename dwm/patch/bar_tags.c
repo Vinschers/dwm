@@ -3,20 +3,16 @@
 int
 width_tag(Bar *bar, int tag)
 {
-    Client *c;
     Monitor *m = bar->mon;
-    int w = 0, tw;
-    char img_icon;
+    int w = 0, tw, imgw, imgh;
+    Picture img;
 
-    tw = TEXTW(tagicon(m, tag, &img_icon));
+    tw = TEXTW(tagicon(m, tag, &img, &imgw, &imgh));
 
     if (tw <= lrpad)
         return 0;
 
-    if (img_icon) {
-        for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next) {}
-        tw += c->icw;
-    }
+    tw += imgw;
 
     if (tw > lrpad)
         w += tw;
@@ -42,9 +38,11 @@ draw_tags(Bar *bar, BarArg *a)
 	int invert;
 	int w, x = a->x;
 	unsigned int i, occ = 0, urg = 0;
-	char *icon, img_icon;
+	char *icon;
 	Monitor *m = bar->mon;
 	Client *c;
+    Picture img;
+    int imgw, imgh;
 
 	for (c = m->clients; c; c = c->next) {
 		occ |= c->tags;
@@ -52,16 +50,13 @@ draw_tags(Bar *bar, BarArg *a)
 			urg |= c->tags;
 	}
 
-	c = m->clients;
 	for (i = 0; i < NUMTAGS; i++) {
-        for (; c && !(c->tags & 1 << i); c = c->next) {}
-
-		icon = tagicon(bar->mon, i, &img_icon);
+		icon = tagicon(bar->mon, i, &img, &imgw, &imgh);
 		invert = 0;
 		w = TEXTW(icon);
 
-        if (img_icon)
-            w += c->icw;
+        if (imgw > 0)
+            w += imgw;
 
         if (w <= lrpad)
             continue;
@@ -76,9 +71,9 @@ draw_tags(Bar *bar, BarArg *a)
 
         drw_text(drw, x, a->y, w, a->h, lrpad / 2, "", invert, False);
 
-        if (img_icon) {
-            drw_text(drw, x + BAR_OFFSET + c->icw, a->y, TEXTW(icon), a->h, lrpad / 2, icon, invert, False);
-            drw_pic(drw, x + BAR_OFFSET + lrpad / 2, a->y + (a->h - c->ich)/2, c->icw, c->ich, c->icon);
+        if (imgw > 0) {
+            drw_text(drw, x + BAR_OFFSET + imgw, a->y, TEXTW(icon), a->h, lrpad / 2, icon, invert, False);
+            drw_pic(drw, x + BAR_OFFSET + lrpad / 2, a->y + (a->h - imgh)/2, imgw, imgh, img);
         } else {
             drw_text(drw, x + BAR_OFFSET, a->y, w, a->h, lrpad / 2, icon, invert, False);
             drw_text(drw, x + w, a->y, w, a->h, lrpad / 2, "", invert, False);

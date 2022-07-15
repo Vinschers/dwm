@@ -1,5 +1,9 @@
 #include <ctype.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+static char currenticons[NUMTAGS][10];
 
 char *
 geticon(Monitor *m, int tag, int iconset)
@@ -94,65 +98,69 @@ containsstr(char *str1, char *str2)
     char *ptr;
 
     for (ptr = str1; *ptr; ++ptr) {
-        if (*ptr == ' ' || ptr == str1)
-            if (strncmp(str2, ptr, strlen(str2)) == 0)
+        if (ptr == str1 || *(ptr - 1) == ' ')
+            if (strncmp(ptr, str2, strlen(str2)) == 0)
                 return 1;
     }
 
     return 0;
 }
 
-char *
-getoccupiedicon(Monitor *m, int tag, char *img_icon)
+void
+setoccupiedicon(Monitor *m, int tag, Picture *img, int *imgw, int *imgh)
 {
-	Client *c = NULL;
+    Client *c;
     unsigned short i = 0;
-	char *icon = NULL, *tagsuperscript = gettagsuperscript(tag), lowername[200], currentname[200];
-    unsigned char hasicon = 0;
+	char *tagsuperscript = gettagsuperscript(tag), lowername[200], currentname[200];
+    char *icon = currenticons[tag];
+
+    *imgw = 0;
+    *imgh = 0;
 
     for (c = m->clients; c && !(c->tags & 1 << tag); c = c->next) {}
-	if (!c)
-		return NULL;
+	if (!c) {
+        *icon = '\0';
+        return;
+    }
 
 	tolowerstr(lowername, c->name);
-
-	icon = geticon(m, tag, IconsOccupied);
-    change_scheme(colors[SchemeTagsNorm][0], scheme[SchemeTagsNorm]);
 
 	for (i = 0; i < LENGTH(occupiedicons); ++i) {
 		tolowerstr(currentname, occupiedicons[i][0]);
 
 		if (containsstr(lowername, currentname)) {
-            hasicon = 1;
-			icon = occupiedicons[i][1];
-            strcat(icon, tagsuperscript);
+            sprintf(icon, "%s%s", occupiedicons[i][1], tagsuperscript);
 
             if (occupiedicons[i][2][0] != '\0') // if there is a new color for the icon
                 change_scheme(occupiedicons[i][2], scheme[SchemeTagsNorm]);
 
-			break;
+            return;
 		}
 	}
 
-    if (!hasicon && c->icon) {
-        *img_icon = 1;
-        return tagsuperscript;
+    if (c->icon) {
+        *img = c->icon;
+        *imgw = c->icw;
+        *imgh = c->ich;
+        strcpy(icon, tagsuperscript);
+    } else {
+        strcpy(icon, geticon(m, tag, IconsOccupied));
     }
-
-	return icon;
 }
 
 char *
-tagicon(Monitor *m, int tag, char *img_icon)
+tagicon(Monitor *m, int tag, Picture *img, int *imgw, int *imgh)
 {
-    *img_icon = 0;
-	char *icon = getoccupiedicon(m, tag, img_icon);
+    char *icon = currenticons[tag];
 
-	if (!icon) {
-		icon = geticon(m, tag, IconsDefault);
+    change_scheme(colors[SchemeTagsNorm][0], scheme[SchemeTagsNorm]);
+	setoccupiedicon(m, tag, img, imgw, imgh);
+
+	if (*icon == '\0') {
+        strcpy(icon, geticon(m, tag, IconsDefault));
 
 		if (TEXTW(icon) <= lrpad && m->tagset[m->seltags] & 1 << tag)
-			icon = geticon(m, tag, IconsVacant);
+            strcpy(icon, geticon(m, tag, IconsVacant));
 	}
 
 	return icon;

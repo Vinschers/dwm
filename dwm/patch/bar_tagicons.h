@@ -5,5 +5,5 @@ enum {
 	IconsLast
 }; /* icon sets */
 
-static char * tagicon(Monitor *m, int tag, char *img_icon);
+static char * tagicon(Monitor *m, int tag, Picture *img, int *imgw, int *imgh);
 

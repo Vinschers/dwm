@@ -2262,7 +2262,8 @@ sigchld(int unused)
 Bool
 updatedefaultlayout()
 {
-    int clients = 0;
+    /*
+    unsigned short clients = 0;
     Client *c;
     Layout *newlayout;
     Arg layoutarg;
@@ -2271,8 +2272,6 @@ updatedefaultlayout()
 
     if (clients >= LENGTH(defaultlayouts))
         clients = LENGTH(defaultlayouts) - 1;
-    else if (clients < 0)
-        clients = 0;
 
     newlayout = (Layout *)&layouts[defaultlayouts[clients]];
 
@@ -2284,6 +2283,7 @@ updatedefaultlayout()
     }
 
     return True;
+    */
 }
 
 void
