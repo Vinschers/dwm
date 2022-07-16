@@ -119,6 +119,7 @@ typedef struct {
 	Line *alt;    /* alternate screen */
 	Line hist[HISTSIZE]; /* history buffer */
 	int histi;    /* history index */
+	int histn;    /* number of history entries */
 	int scr;      /* scroll back */
 	int *dirty;   /* dirtyness of lines */
 	TCursor c;    /* cursor */
@@ -149,6 +150,7 @@ typedef union {
 typedef struct {
 	int tw, th; /* tty width and height */
 	int w, h; /* window width and height */
+	int hborderpx, vborderpx;
 	int ch; /* char height */
 	int cw; /* char width  */
 	int mode; /* window state/mode flags */
@@ -270,6 +272,9 @@ size_t utf8encode(Rune, char *);
 void *xmalloc(size_t);
 void *xrealloc(void *, size_t);
 char *xstrdup(const char *);
+
+int xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b);
+
 
 /* config.h globals */
 extern char *utmp;

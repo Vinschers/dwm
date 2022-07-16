@@ -142,6 +142,8 @@ static void csihandle(void);
 static void readcolonargs(char **, int, int[][CAR_PER_ARG]);
 static void csiparse(void);
 static void csireset(void);
+static void osc4_color_response(int num);
+static void osc_color_response(int index, int num);
 static int eschandle(uchar);
 static void strdump(void);
 static void strhandle(void);
@@ -166,7 +168,7 @@ static void tputtab(int);
 static void tputc(Rune);
 static void treset(void);
 static void tscrollup(int, int, int);
-static void tscrolldown(int, int, int);
+static void tscrolldown(int, int);
 static void tsetattr(const int *, int);
 static void tsetchar(Rune, const Glyph *, int, int);
 static void tsetdirt(int, int);
@@ -329,25 +331,10 @@ utf8validate(Rune *u, size_t i)
 	return i;
 }
 
-static const char base64_digits[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0,
-	63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 0, 0, 0, -1, 0, 0, 0, 0, 1,
-	2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24, 25, 0, 0, 0, 0, 0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-	35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-
 char
 base64dec_getc(const char **src)
 {
-	while (**src && !isprint(**src))
+	while (**src && !isprint((unsigned char)**src))
 		(*src)++;
 	return **src ? *((*src)++) : '=';  /* emulate padding if string ends */
 }
@@ -357,6 +344,13 @@ base64dec(const char *src)
 {
 	size_t in_len = strlen(src);
 	char *result, *dst;
+	static const char base64_digits[256] = {
+		[43] = 62, 0, 0, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
+		0, 0, 0, -1, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+		13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 0, 0, 0, 0,
+		0, 0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+		40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
+	};
 
 	if (in_len % 4)
 		in_len += 4 - (in_len % 4);
@@ -796,8 +790,6 @@ ttynew(const char *line, char *cmd, const char *out, char **args)
 		dup2(s, 2);
 		if (ioctl(s, TIOCSCTTY, NULL) < 0)
 			die("ioctl TIOCSCTTY failed: %s\n", strerror(errno));
-		close(s);
-		close(m);
 		if (s > 2)
 				close(s);
 #ifdef __OpenBSD__
@@ -1043,7 +1035,7 @@ treset(void)
 	for (i = 0; i < 2; i++) {
 		tmoveto(0, 0);
 		tcursor(CURSOR_SAVE);
-		tclearregion(0, 0, term.col-1, term.row-1);
+		tclearregion(0, 0, term.maxcol-1, term.row-1);
 		tswapscreen();
 	}
 	for (im = term.images; im; im = im->next)
@@ -1073,22 +1065,15 @@ tswapscreen(void)
 }
 
 void
-tscrolldown(int orig, int n, int copyhist)
+tscrolldown(int orig, int n)
 {
 	int i;
 	Line temp;
 
 	LIMIT(n, 0, term.bot-orig+1);
 
-	if (copyhist) {
-		term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE;
-		temp = term.hist[term.histi];
-		term.hist[term.histi] = term.line[term.bot];
-		term.line[term.bot] = temp;
-	}
-
 	tsetdirt(orig, term.bot-n);
-	tclearregion(0, term.bot-n+1, term.col-1, term.bot);
+	tclearregion(0, term.bot-n+1, term.maxcol-1, term.bot);
 
 	for (i = term.bot; i >= orig+n; i--) {
 		temp = term.line[i];
@@ -1096,7 +1081,14 @@ tscrolldown(int orig, int n, int copyhist)
 		term.line[i-n] = temp;
 	}
 
-	scroll_images(n);
+	/* move images, if they are inside the scrolling region */
+	ImageList *im;
+	for (im = term.images; im; im = im->next) {
+		if (im->y * win.ch + im->height > orig * win.ch && im->y <= term.bot) {
+			im->y += n;
+			im->should_delete |= (im->y >= term.row);
+		}
+	}
 
 	if (term.scr == 0)
 		selscroll(orig, n);
@@ -1110,17 +1102,20 @@ tscrollup(int orig, int n, int copyhist)
 
 	LIMIT(n, 0, term.bot-orig+1);
 
-	if (copyhist) {
-		term.histi = (term.histi + 1) % HISTSIZE;
-		temp = term.hist[term.histi];
-		term.hist[term.histi] = term.line[orig];
-		term.line[orig] = temp;
+	if (copyhist && !IS_SET(MODE_ALTSCREEN)) {
+		for (i = 0; i < n; i++) {
+			term.histi = (term.histi + 1) % HISTSIZE;
+			temp = term.hist[term.histi];
+			term.hist[term.histi] = term.line[orig+i];
+			term.line[orig+i] = temp;
+		}
+		term.histn = MIN(term.histn + n, HISTSIZE);
+
+		if (term.scr > 0 && term.scr < HISTSIZE)
+			term.scr = MIN(term.scr + n, HISTSIZE-1);
 	}
 
-	if (term.scr > 0 && term.scr < HISTSIZE)
-		term.scr = MIN(term.scr + n, HISTSIZE-1);
-
-	tclearregion(0, orig, term.col-1, orig+n-1);
+	tclearregion(0, orig, term.maxcol-1, orig+n-1);
 	tsetdirt(orig+n, term.bot);
 
 	for (i = orig; i <= term.bot-n; i++) {
@@ -1129,7 +1124,8 @@ tscrollup(int orig, int n, int copyhist)
 		term.line[i+n] = temp;
 	}
 
-	scroll_images(-1 * n);
+	if (term.scr == 0)
+		scroll_images(-1 * n);
 
 	if (term.scr == 0)
 		selscroll(orig, -n);
@@ -1350,7 +1346,7 @@ void
 tinsertblankline(int n)
 {
 	if (BETWEEN(term.c.y, term.top, term.bot))
-		tscrolldown(term.c.y, n, 0);
+		tscrolldown(term.c.y, n);
 }
 
 void
@@ -1626,8 +1622,7 @@ tsetmode(int priv, int set, const int *args, int narg)
 					break;
 				alt = IS_SET(MODE_ALTSCREEN);
 				if (alt) {
-					tclearregion(0, 0, term.col-1,
-							term.row-1);
+					tclearregion(0, 0, term.maxcol-1, term.row-1);
 				}
 				if (set ^ alt) /* set is always 1 or 0 */
 					tswapscreen();
@@ -1685,9 +1680,10 @@ tsetmode(int priv, int set, const int *args, int narg)
 void
 csihandle(void)
 {
-	char buf[40];
+	char buffer[40];
 	int len;
 	ImageList *im;
+	int maxcol = term.maxcol;
 
 	switch (csiescseq.mode[0]) {
 	default:
@@ -1785,30 +1781,55 @@ csihandle(void)
 	case 'J': /* ED -- Clear screen */
 		switch (csiescseq.arg[0]) {
 		case 0: /* below */
-			tclearregion(term.c.x, term.c.y, term.col-1, term.c.y);
+			tclearregion(term.c.x, term.c.y, maxcol-1, term.c.y);
 			if (term.c.y < term.row-1) {
-				tclearregion(0, term.c.y+1, term.col-1,
+				tclearregion(0, term.c.y+1, maxcol-1,
 						term.row-1);
 			}
 			break;
 		case 1: /* above */
 			if (term.c.y > 1)
-				tclearregion(0, 0, term.col-1, term.c.y-1);
+				tclearregion(0, 0, maxcol-1, term.c.y-1);
 			tclearregion(0, term.c.y, term.c.x, term.c.y);
 			break;
 		case 2: /* screen */
-			tclearregion(0, 0, term.col-1, term.row-1);
-			break;
-		case 3: /* all including scrollback */
-			tclearregion(0, 0, term.col-1, term.row-1);
+			if (!IS_SET(MODE_ALTSCREEN)) {
+				kscrolldown(&((Arg){ .i = term.scr }));
+				int n, m, bot = term.bot;
+				term.bot = term.row-1;
+				for (n = term.row-1; n >= 0; n--) {
+					for (m = 0; m < maxcol && term.line[n][m].u == ' ' && !term.line[n][m].mode; m++);
+					if (m < maxcol) {
+						tscrollup(0, n+1, 1);
+						break;
+					}
+				}
+				if (n < term.row-1)
+					tclearregion(0, 0, maxcol-1, term.row-n-2);
+				term.bot = bot;
+				break;
+			}
 
-			term.scr = 0;
-			term.histi = 0;
-			for (int i = 0; i < HISTSIZE; i++)
-				term.hist[i][0].u = '\0';
+			tclearregion(0, 0, maxcol-1, term.row-1);
 
 			for (im = term.images; im; im = im->next)
 				im->should_delete = 1;
+			break;
+		case 3: /* scrollback */
+			if (!IS_SET(MODE_ALTSCREEN)) {
+				term.scr = 0;
+				term.histi = 0;
+				term.histn = 0;
+				Glyph g=(Glyph){.bg=term.c.attr.bg, .fg=term.c.attr.fg, .u=' ', .mode=0};
+				for (int i = 0; i < HISTSIZE; i++) {
+					for (int j = 0; j < maxcol; j++)
+						term.hist[i][j] = g;
+				}
+			}
+			if (!IS_SET(MODE_ALTSCREEN)) {
+				for (im = term.images; im; im = im->next)
+					im->should_delete |= (im->y * win.ch + im->height <= 0);
+			}
 			break;
 		default:
 			goto unknown;
@@ -1817,14 +1838,14 @@ csihandle(void)
 	case 'K': /* EL -- Clear line */
 		switch (csiescseq.arg[0]) {
 		case 0: /* right */
-			tclearregion(term.c.x, term.c.y, term.col-1,
+			tclearregion(term.c.x, term.c.y, maxcol-1,
 					term.c.y);
 			break;
 		case 1: /* left */
 			tclearregion(0, term.c.y, term.c.x, term.c.y);
 			break;
 		case 2: /* all */
-			tclearregion(0, term.c.y, term.col-1, term.c.y);
+			tclearregion(0, term.c.y, maxcol-1, term.c.y);
 			break;
 		}
 		break;
@@ -1834,7 +1855,7 @@ csihandle(void)
 		break;
 	case 'T': /* SD -- Scroll <n> line down */
 		DEFAULT(csiescseq.arg[0], 1);
-		tscrolldown(term.top, csiescseq.arg[0], 1);
+		tscrolldown(term.top, csiescseq.arg[0]);
 		break;
 	case 'L': /* IL -- Insert <n> blank lines */
 		DEFAULT(csiescseq.arg[0], 1);
@@ -1872,9 +1893,9 @@ csihandle(void)
 		break;
 	case 'n': /* DSR – Device Status Report (cursor position) */
 		if (csiescseq.arg[0] == 6) {
-			len = snprintf(buf, sizeof(buf), "\033[%i;%iR",
+			len = snprintf(buffer, sizeof(buffer), "\033[%i;%iR",
 					term.c.y+1, term.c.x+1);
-			ttywrite(buf, len, 0);
+			ttywrite(buffer, len, 0);
 		}
 		break;
 	case 'r': /* DECSTBM -- Set Scrolling Region */
@@ -1965,6 +1986,42 @@ csireset(void)
 }
 
 void
+osc4_color_response(int num)
+{
+	int n;
+	char buf[32];
+	unsigned char r, g, b;
+
+	if (xgetcolor(num, &r, &g, &b)) {
+		fprintf(stderr, "erresc: failed to fetch osc4 color %d\n", num);
+		return;
+	}
+
+	n = snprintf(buf, sizeof buf, "\033]4;%d;rgb:%02x%02x/%02x%02x/%02x%02x\007",
+			num, r, r, g, g, b, b);
+
+	ttywrite(buf, n, 1);
+}
+
+void
+osc_color_response(int index, int num)
+{
+	int n;
+	char buf[32];
+	unsigned char r, g, b;
+
+	if (xgetcolor(index, &r, &g, &b)) {
+		fprintf(stderr, "erresc: failed to fetch osc color %d\n", index);
+		return;
+	}
+
+	n = snprintf(buf, sizeof buf, "\033]%d;rgb:%02x%02x/%02x%02x/%02x%02x\007",
+			num, r, r, g, g, b, b);
+
+	ttywrite(buf, n, 1);
+}
+
+void
 strhandle(void)
 {
 	char *p = NULL, *dec;
@@ -2004,44 +2061,51 @@ strhandle(void)
 				}
 			}
 			return;
-		case 10: /* foreground set */
+		case 10:
 			if (narg < 2)
 				break;
 
 			p = strescseq.args[1];
-			if (xsetcolorname(defaultfg, p))
-				fprintf(stderr, "erresc: invalid foreground color %d\n", p);
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultfg, 10);
+			else if (xsetcolorname(defaultfg, p))
+				fprintf(stderr, "erresc: invalid foreground color: %s\n", p);
 			else
-				redraw();
-			break;
+				tfulldirt();
 			return;
-		case 11: /* background set */
+		case 11:
 			if (narg < 2)
 				break;
 
 			p = strescseq.args[1];
-			if (xsetcolorname(defaultbg, p))
-				fprintf(stderr, "erresc: invalid background color %d\n", p);
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultbg, 11);
+			else if (xsetcolorname(defaultbg, p))
+				fprintf(stderr, "erresc: invalid background color: %s\n", p);
 			else
-				redraw();
-			break;
+				tfulldirt();
 			return;
-		case 12: /* cursor color */
+		case 12:
 			if (narg < 2)
 				break;
 
 			p = strescseq.args[1];
-			if (xsetcolorname(defaultcs, p))
-				fprintf(stderr, "erresc: invalid cursor color %d\n", p);
+
+			if (!strcmp(p, "?"))
+				osc_color_response(defaultcs, 12);
+			else if (xsetcolorname(defaultcs, p))
+				fprintf(stderr, "erresc: invalid cursor color: %s\n", p);
 			else
-				redraw();
-			break;
+				tfulldirt();
+			return;
 		case 4: /* color set */
 			if ((par == 4 && narg < 3) || narg < 2)
 				break;
 			p = strescseq.args[((par == 4) ? 2 : 1)];
 			/* FALLTHROUGH */
-		case 104: /* color reset, here p = NULL */
+		case 104: /* color reset */
 			if (par == 10)
 				j = defaultfg;
 			else if (par == 11)
@@ -2051,7 +2115,9 @@ strhandle(void)
 			else
 				j = (narg > 1) ? atoi(strescseq.args[1]) : -1;
 
-			if (xsetcolorname(j, p)) {
+			if (p && !strcmp(p, "?"))
+				osc4_color_response(j);
+			else if (xsetcolorname(j, p)) {
 				if (par == 104 && narg <= 1)
 					return; /* color reset without parameter */
 				fprintf(stderr, "erresc: invalid color j=%d, p=%s\n",
@@ -2059,7 +2125,7 @@ strhandle(void)
 			} else {
 				if (j == defaultbg)
 					xclearwin();
-				redraw();
+				tfulldirt();
 			}
 			return;
 		}
@@ -2463,7 +2529,7 @@ eschandle(uchar ascii)
 		break;
 	case 'M': /* RI -- Reverse index */
 		if (term.c.y == term.top) {
-			tscrolldown(term.top, 1, 1);
+			tscrolldown(term.top, 1);
 		} else {
 			tmoveto(term.c.x, term.c.y-1);
 		}
@@ -2646,6 +2712,10 @@ check_control_code:
 	if (width == 2) {
 		gp->mode |= ATTR_WIDE;
 		if (term.c.x+1 < term.col) {
+			if (gp[1].mode == ATTR_WIDE && term.c.x+2 < term.col) {
+				gp[2].u = ' ';
+				gp[2].mode &= ~ATTR_WDUMMY;
+			}
 			gp[1].u = '\0';
 			gp[1].mode = ATTR_WDUMMY;
 		}
@@ -2740,12 +2810,11 @@ tresize(int col, int row)
 	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
 	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
 
+	Glyph gc=(Glyph){.bg=term.c.attr.bg, .fg=term.c.attr.fg, .u=' ', .mode=0};
 	for (i = 0; i < HISTSIZE; i++) {
 		term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
-		for (j = mincol; j < col; j++) {
-			term.hist[i][j] = term.c.attr;
-			term.hist[i][j].u = ' ';
-		}
+		for (j = mincol; j < col; j++)
+			term.hist[i][j] = gc;
 	}
 
 	/* resize each row to new width, zero-pad if needed */

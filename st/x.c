@@ -182,7 +182,7 @@ static char *opt_name  = NULL;
 static char *opt_title = NULL;
 
 
-static int oldbutton = 3; /* button event on startup: 3 = release */
+static uint buttons; /* bit field of pressed buttons */
 
 #include "patch/x_include.c"
 
@@ -264,7 +264,7 @@ zoomreset(const Arg *arg)
 int
 evcol(XEvent *e)
 {
-	int x = e->xbutton.x - borderpx;
+	int x = e->xbutton.x - win.hborderpx;
 	LIMIT(x, 0, win.tw - 1);
 	return x / win.cw;
 }
@@ -272,7 +272,7 @@ evcol(XEvent *e)
 int
 evrow(XEvent *e)
 {
-	int y = e->xbutton.y - borderpx;
+	int y = e->xbutton.y - win.vborderpx;
 	LIMIT(y, 0, win.th - 1);
 	return y / win.ch;
 }
@@ -280,12 +280,12 @@ evrow(XEvent *e)
 uint
 buttonmask(uint button)
 {
-       return button == Button1 ? Button1Mask
-            : button == Button2 ? Button2Mask
-            : button == Button3 ? Button3Mask
-            : button == Button4 ? Button4Mask
-            : button == Button5 ? Button5Mask
-            : 0;
+	return button == Button1 ? Button1Mask
+		: button == Button2 ? Button2Mask
+		: button == Button3 ? Button3Mask
+		: button == Button4 ? Button4Mask
+		: button == Button5 ? Button5Mask
+		: 0;
 }
 
 int
@@ -329,61 +329,69 @@ mousesel(XEvent *e, int done)
 void
 mousereport(XEvent *e)
 {
-	int len, x = evcol(e), y = evrow(e),
-	    button = e->xbutton.button, state = e->xbutton.state;
+	int len, btn, code;
+	int x = evcol(e), y = evrow(e);
+	int state = e->xbutton.state;
 	char buf[40];
 	static int ox, oy;
 
-	/* from urxvt */
-	if (e->xbutton.type == MotionNotify) {
+	if (e->type == MotionNotify) {
 		if (x == ox && y == oy)
 			return;
 		if (!IS_SET(MODE_MOUSEMOTION) && !IS_SET(MODE_MOUSEMANY))
 			return;
-		/* MOUSE_MOTION: no reporting if no button is pressed */
-		if (IS_SET(MODE_MOUSEMOTION) && oldbutton == 3)
+		/* MODE_MOUSEMOTION: no reporting if no button is pressed */
+		if (IS_SET(MODE_MOUSEMOTION) && buttons == 0)
 			return;
 
-		button = oldbutton + 32;
-		ox = x;
-		oy = y;
+		/* Set btn to lowest-numbered pressed button, or 12 if no
+		 * buttons are pressed. */
+		for (btn = 1; btn <= 11 && !(buttons & (1<<(btn-1))); btn++)
+			;
+		code = 32;
 	} else {
-		if (!IS_SET(MODE_MOUSESGR) && e->xbutton.type == ButtonRelease) {
-			button = 3;
-		} else {
-			button -= Button1;
-			if (button >= 7)
-				button += 128 - 7;
-			else if (button >= 3)
-				button += 64 - 3;
-		}
-		if (e->xbutton.type == ButtonPress) {
-			oldbutton = button;
-			ox = x;
-			oy = y;
-		} else if (e->xbutton.type == ButtonRelease) {
-			oldbutton = 3;
+		btn = e->xbutton.button;
+		/* Only buttons 1 through 11 can be encoded */
+		if (btn < 1 || btn > 11)
+			return;
+		if (e->type == ButtonRelease) {
 			/* MODE_MOUSEX10: no button release reporting */
 			if (IS_SET(MODE_MOUSEX10))
 				return;
-			if (button == 64 || button == 65)
+			/* Don't send release events for the scroll wheel */
+			if (btn == 4 || btn == 5)
 				return;
 		}
+		code = 0;
 	}
 
+	ox = x;
+	oy = y;
+
+	/* Encode btn into code. If no button is pressed for a motion event in
+	 * MODE_MOUSEMANY, then encode it as a release. */
+	if ((!IS_SET(MODE_MOUSESGR) && e->type == ButtonRelease) || btn == 12)
+		code += 3;
+	else if (btn >= 8)
+		code += 128 + btn - 8;
+	else if (btn >= 4)
+		code += 64 + btn - 4;
+	else
+		code += btn - 1;
+
 	if (!IS_SET(MODE_MOUSEX10)) {
-		button += ((state & ShiftMask  ) ? 4  : 0)
-			+ ((state & Mod4Mask   ) ? 8  : 0)
-			+ ((state & ControlMask) ? 16 : 0);
+		code += ((state & ShiftMask  ) ?  4 : 0)
+		      + ((state & Mod1Mask   ) ?  8 : 0) /* meta key: alt */
+		      + ((state & ControlMask) ? 16 : 0);
 	}
 
 	if (IS_SET(MODE_MOUSESGR)) {
 		len = snprintf(buf, sizeof(buf), "\033[<%d;%d;%d%c",
-				button, x+1, y+1,
-				e->xbutton.type == ButtonRelease ? 'm' : 'M');
+				code, x+1, y+1,
+				e->type == ButtonRelease ? 'm' : 'M');
 	} else if (x < 223 && y < 223) {
 		len = snprintf(buf, sizeof(buf), "\033[M%c%c%c",
-				32+button, 32+x+1, 32+y+1);
+				32+code, 32+x+1, 32+y+1);
 	} else {
 		return;
 	}
@@ -394,8 +402,12 @@ mousereport(XEvent *e)
 void
 bpress(XEvent *e)
 {
+	int btn = e->xbutton.button;
 	struct timespec now;
 	int snap;
+
+	if (1 <= btn && btn <= 11)
+		buttons |= 1 << (btn-1);
 
 	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 		mousereport(e);
@@ -405,7 +417,7 @@ bpress(XEvent *e)
 	if (mouseaction(e, 0))
 		return;
 
-	if (e->xbutton.button == Button1) {
+	if (btn == Button1) {
 		/*
 		 * If the user clicks below predefined timeouts specific
 		 * snapping behaviour is exposed.
@@ -437,6 +449,7 @@ propnotify(XEvent *e)
 			 xpev->atom == clipboard)) {
 		selnotify(e);
 	}
+
 }
 
 void
@@ -467,7 +480,8 @@ selnotify(XEvent *e)
 			return;
 		}
 
-		if (e->type == PropertyNotify && nitems == 0 && rem == 0) {
+		if (e->type == PropertyNotify && nitems == 0 && rem == 0)
+		{
 			/*
 			 * If there is some PropertyNotify with no data, then
 			 * this is the signal of the selection owner that all
@@ -609,7 +623,9 @@ setsel(char *str, Time t)
 	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
 		selclear();
 
+	clipcopy(NULL);
 }
+
 
 void
 xsetsel(char *str)
@@ -620,6 +636,11 @@ xsetsel(char *str)
 void
 brelease(XEvent *e)
 {
+	int btn = e->xbutton.button;
+
+	if (1 <= btn && btn <= 11)
+		buttons &= ~(1 << (btn-1));
+
 	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 		mousereport(e);
 		return;
@@ -627,9 +648,8 @@ brelease(XEvent *e)
 
 	if (mouseaction(e, 1))
 		return;
-	if (e->xbutton.button == Button1) {
+	if (btn == Button1) {
 		mousesel(e, 1);
-		openUrlOnClick(evcol(e), evrow(e), url_opener);
 	}
 }
 
@@ -660,6 +680,8 @@ cresize(int width, int height)
 	col = MAX(1, col);
 	row = MAX(1, row);
 
+	win.hborderpx = (win.w - col * win.cw) / 2;
+	win.vborderpx = (win.h - row * win.ch) / 2;
 
 	tresize(col, row);
 	xresize(col, row);
@@ -747,6 +769,19 @@ xloadcols(void)
 }
 
 int
+xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+	if (!BETWEEN(x, 0, dc.collen))
+		return 1;
+
+	*r = dc.col[x].color.red >> 8;
+	*g = dc.col[x].color.green >> 8;
+	*b = dc.col[x].color.blue >> 8;
+
+	return 0;
+}
+
+int
 xsetcolorname(int x, const char *name)
 {
 	Color ncolor;
@@ -801,8 +836,8 @@ xhints(void)
 	sizeh->flags = PSize | PResizeInc | PBaseSize | PMinSize;
 	sizeh->height = win.h;
 	sizeh->width = win.w;
-	sizeh->height_inc = win.ch;
-	sizeh->width_inc = win.cw;
+	sizeh->height_inc = 1;
+	sizeh->width_inc = 1;
 	sizeh->base_height = 2 * borderpx;
 	sizeh->base_width = 2 * borderpx;
 	sizeh->min_height = win.ch + 2 * borderpx;
@@ -1102,8 +1137,8 @@ xinit(int cols, int rows)
 	xloadcols();
 
 	/* adjust fixed window geometry */
-	win.w = 2 * borderpx + cols * win.cw;
-	win.h = 2 * borderpx + rows * win.ch;
+	win.w = 2 * win.hborderpx + cols * win.cw;
+	win.h = 2 * win.vborderpx + rows * win.ch;
 	if (xw.gm & XNegative)
 		xw.l += DisplayWidth(xw.dpy, xw.scr) - win.w - 2;
 	if (xw.gm & YNegative)
@@ -1195,7 +1230,7 @@ xinit(int cols, int rows)
 int
 xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x, int y)
 {
-	float winx = borderpx + x * win.cw, winy = borderpx + y * win.ch, xp, yp;
+	float winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch, xp, yp;
 	ushort mode, prevmode = USHRT_MAX;
 	Font *font = &dc.font;
 	int frcflags = FRC_NORMAL;
@@ -1377,7 +1412,7 @@ void
 xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, int dmode)
 {
 	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
-	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch;
+	int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch;
 	int width = charlen * win.cw;
 	Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
 	XRenderColor colfg, colbg;
@@ -1466,17 +1501,17 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	if (dmode & DRAW_BG) {
 	/* Intelligent cleaning up of the borders. */
 	if (x == 0) {
-		xclear(0, (y == 0)? 0 : winy, borderpx,
+		xclear(0, (y == 0)? 0 : winy, win.vborderpx,
 			winy + win.ch +
-			((winy + win.ch >= borderpx + win.th)? win.h : 0));
+			((winy + win.ch >= win.vborderpx + win.th)? win.h : 0));
 	}
-	if (winx + width >= borderpx + win.tw) {
+	if (winx + width >= win.hborderpx + win.tw) {
 		xclear(winx + width, (y == 0)? 0 : winy, win.w,
-			((winy + win.ch >= borderpx + win.th)? win.h : (winy + win.ch)));
+			((winy + win.ch >= win.vborderpx + win.th)? win.h : (winy + win.ch)));
 	}
 	if (y == 0)
-		xclear(winx, 0, winx + width, borderpx);
-	if (winy + win.ch >= borderpx + win.th)
+		xclear(winx, 0, winx + width, win.hborderpx);
+	if (winy + win.ch >= win.vborderpx + win.th)
 		xclear(winx, winy + win.ch, winx + width, win.h);
 
 	/* Clean up the region we want to draw to. */
@@ -1531,9 +1566,8 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 
 		// Underline Style
 		if (base.ustyle != 3) {
-			//XftDrawRect(xw.draw, fg, winx, winy + dc.font.ascent + 1, width, 1);
 			XFillRectangle(xw.dpy, XftDrawDrawable(xw.draw), ugc, winx,
-				winy + dc.font.ascent + 1, width, wlw);
+				winy + dc.font.ascent * chscale + 1, width, wlw);
 		} else if (base.ustyle == 3) {
 			int ww = win.cw;//width;
 			int wh = dc.font.descent - wlw/2 - 1;//r.height/7;
@@ -1844,7 +1878,7 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	}
 
 	if (base.mode & ATTR_STRUCK) {
-		XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3,
+		XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent * chscale / 3,
 				width, 1);
 	}
 	}
@@ -1927,35 +1961,35 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int le
 		case 3: /* Blinking underline */
 		case 4: /* Steady underline */
 			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + (cy + 1) * win.ch - \
+					win.hborderpx + cx * win.cw,
+					win.vborderpx + (cy + 1) * win.ch - \
 						cursorthickness,
 					win.cw, cursorthickness);
 			break;
 		case 5: /* Blinking bar */
 		case 6: /* Steady bar */
 			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + cy * win.ch,
+					win.hborderpx + cx * win.cw,
+					win.vborderpx + cy * win.ch,
 					cursorthickness, win.ch);
 			break;
 		}
 	} else {
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + cy * win.ch,
 				win.cw - 1, 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + cy * win.ch,
 				1, win.ch - 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + (cx + 1) * win.cw - 1,
-				borderpx + cy * win.ch,
+				win.hborderpx + (cx + 1) * win.cw - 1,
+				win.vborderpx + cy * win.ch,
 				1, win.ch - 1);
 		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + (cy + 1) * win.ch - 1,
+				win.hborderpx + cx * win.cw,
+				win.vborderpx + (cy + 1) * win.ch - 1,
 				win.cw, 1);
 	}
 }
@@ -2030,8 +2064,6 @@ xfreetitlestack(void)
 int
 xstartdraw(void)
 {
-	if (IS_SET(MODE_VISIBLE))
-		XCopyArea(xw.dpy, xw.win, xw.buf, dc.gc, 0, 0, win.w, win.h, 0, 0);
 	return IS_SET(MODE_VISIBLE);
 }
 
@@ -2078,18 +2110,8 @@ void
 xfinishdraw(void)
 {
 	ImageList *im;
-	int x, y;
-	int n = 0;
-	int nlimit = 256;
-	XRectangle *rects = NULL;
 	XGCValues gcvalues;
 	GC gc;
-
-	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w,
-			win.h, 0, 0);
-	XSetForeground(xw.dpy, dc.gc,
-			dc.col[IS_SET(MODE_REVERSE)?
-				defaultfg : defaultbg].pixel);
 
 	for (im = term.images; im; im = im->next) {
 		if (term.images == NULL) {
@@ -2132,17 +2154,18 @@ xfinishdraw(void)
 			im->pixels = NULL;
 		}
 
-		n = 0;
 		memset(&gcvalues, 0, sizeof(gcvalues));
 		gc = XCreateGC(xw.dpy, xw.win, 0, &gcvalues);
 
-		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, borderpx + im->x * win.cw, borderpx + im->y * win.ch);
+		XCopyArea(xw.dpy, (Drawable)im->pixmap, xw.buf, gc, 0, 0, im->width, im->height, win.hborderpx + im->x * win.cw, win.vborderpx + im->y * win.ch);
 		XFreeGC(xw.dpy, gc);
 
 	}
 
-	free(rects);
-	drawregion(0, 0, term.col, term.row);
+	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);
+	XSetForeground(xw.dpy, dc.gc,
+			dc.col[IS_SET(MODE_REVERSE)?
+				defaultfg : defaultbg].pixel);
 }
 
 void

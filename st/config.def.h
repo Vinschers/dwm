@@ -12,9 +12,9 @@ static char *font2[] = {
 /*	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true", */
 };
 
+
 static int borderpx = 2;
 
-static char *url_opener = "xdg-open";
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -191,7 +191,7 @@ static uint forcemousemod = ShiftMask;
  */
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
-	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	{ XK_ANY_MOD,           Button2, clippaste,      {.i = 0},      1 },
 	{ ShiftMask,            Button4, kscrollup,      {.i = 1} },
 	{ ShiftMask,            Button5, kscrolldown,    {.i = 1} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
@@ -220,8 +220,8 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_V,           clippaste,       {.i =  0} },
 	{ ShiftMask,            XK_Page_Up,     kscrollup,       {.i = -1} },
 	{ ShiftMask,            XK_Page_Down,   kscrolldown,     {.i = -1} },
-	{ TERMMOD,              XK_Y,           selpaste,        {.i =  0} },
-	{ ShiftMask,            XK_Insert,      selpaste,        {.i =  0} },
+	{ TERMMOD,              XK_Y,           clippaste,       {.i =  0} },
+	{ ShiftMask,            XK_Insert,      clippaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,         {.i =  0} },
 	{ TERMMOD,              XK_Return,      newterm,         {.i =  0} },
 	{ TERMMOD,              XK_U,           externalpipe,    { .v = openurlcmd } },
