@@ -44,6 +44,10 @@ static char urgbordercolor[]             = "#f7575d";
 static char urgfloatcolor[]              = "#f7575d";
 
 
+static char hidnormfgcolor[]             = "#1460d2";
+static char hidselfgcolor[]              = "#227799";
+static char hidnormbgcolor[]             = BAR_BG;
+static char hidselbgcolor[]              = BAR_BG;
 static char normTTBbgcolor[]             = UNSELECTED_WINDOW;
 static char normLTRbgcolor[]             = UNSELECTED_WINDOW;
 static char normMONObgcolor[]            = UNSELECTED_WINDOW;
@@ -86,6 +90,8 @@ static char *colors[][ColCount] = {
 	[SchemeTitleSel]     = { titleselfgcolor,  titleselbgcolor,  titleselbordercolor,  titleselfloatcolor },
 	[SchemeTagsNorm]     = { tagsnormfgcolor,  tagsnormbgcolor,  tagsnormbordercolor,  tagsnormfloatcolor },
 	[SchemeTagsSel]      = { tagsselfgcolor,   tagsselbgcolor,   tagsselbordercolor,   tagsselfloatcolor },
+	[SchemeHidNorm]      = { hidnormfgcolor,   hidnormbgcolor,   c000000,              c000000 },
+	[SchemeHidSel]       = { hidselfgcolor,    hidselbgcolor,    c000000,              c000000 },
 	[SchemeUrg]          = { urgfgcolor,       urgbgcolor,       urgbordercolor,       urgfloatcolor },
 	[SchemeFlexActTTB]   = { titleselfgcolor,  actTTBbgcolor,    actTTBbgcolor,        c000000 },
 	[SchemeFlexActLTR]   = { titleselfgcolor,  actLTRbgcolor,    actLTRbgcolor,        c000000 },

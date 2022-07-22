@@ -25,6 +25,7 @@
 #include "fullscreen.c"
 #include "pertag.c"
 #include "vanitygaps.c"
+#include "xrdb.c"
 /* Layouts */
 #include "layout_facts.c"
 #include "layout_bstack.c"
