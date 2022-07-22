@@ -9,10 +9,10 @@
 #include "bar_status2d.c"
 #include "bar_statuscmd.c"
 #include "bar_winicon.c"
+#include "bar_tabgroups.c"
 #include "bar_tagpreview.c"
 #include "bar_tags.c"
 #include "bar_wintitle.c"
-#include "bar_flexwintitle.c"
 #include "bar_systray.c"
 #include "bar_wintitleactions.c"
 

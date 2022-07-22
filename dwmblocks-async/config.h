@@ -1,18 +1,15 @@
 #define CMDLENGTH 1000
-#define DELIMITER " "
-#define ICON_LENGTH 60
-#define CLICKABLE_BLOCKS 1
-
-const char *bgcolors[] = {"#224664", "#132738"};
-const char *fgcolors[] = {"#BE9DFF", "#3AC1FF"};
+#define DELIMITER "  "
+#define LEADING_DELIMITER " "
+#define CLICKABLE_BLOCKS
 
 const Block blocks[] = {
-	{"sb-network",			1,			8},
-    {"sb-price",		    60,			7},
-    {"sb-weather",			60,			6},
-    {"sb-keyboard",		    0,			5},
-    {"sb-volume",		    0,			4},
-    {"sb-hardware",		    2,			3},
-    {"sb-battery",			30,			2},
-    {"sb-datetime",	        1, 			1},
+	BLOCK("sb-network",     1,      8),
+	// BLOCK("sb-price",       60,     7),
+	BLOCK("sb-weather",     60,     6),
+	BLOCK("sb-keyboard",    0,      5),
+	BLOCK("sb-volume",      0,      4),
+	BLOCK("sb-hardware",    2,      3),
+	BLOCK("sb-battery",     30,     2),
+	BLOCK("sb-datetime",    1,      1)
 };

@@ -37,9 +37,20 @@ static const int ulineall                = 0;   /* 1 to show underline on all ta
 static int tagindicatortype              = INDICATOR_NONE;
 static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_NONE;
+static void (*bartabmonfns[])(Monitor *) = { monocle /* , customlayoutfn */ };
 static const int quit_empty_window_count = 0;   /* only allow dwm to quit if no (<= count) windows are open */
 
-static const char *fonts[]          = { "Source Code Pro:size=12:style=bold", "fontawesome:size=12", "fontawesomebrands:size=12", "JetBrainsMono Nerd Font:size=12", "JoyPixels:size=12", "Noto Color Emoji:size=12", "Latin Modern Math:size=15", "Hack Nerd Font Mono:size=12", "SourceHanMono:size=15" };
+static const char *fonts[] = {
+    "Source Code Pro:size=12:style=bold",
+    "fontawesome:size=12",
+    "fontawesomebrands:size=12",
+    "JetBrainsMono Nerd Font:size=12",
+    "JoyPixels:size=12",
+    "Noto Color Emoji:size=12",
+    "Latin Modern Math:size=15",
+    "Hack Nerd Font Mono:size=12",
+    "SourceHanMono:size=15"
+};
 static const char dmenufont[]       = "Source Code Pro:size=12";
 
 // static const unsigned int baralpha = 0xd0;
@@ -117,7 +128,7 @@ static const BarRule barrules[] = {
 	{  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
 	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,           draw_status2d,          click_statuscmd,         NULL,                    "status2d" },
-	{ -1,        0,     BAR_ALIGN_NONE,   width_flexwintitle,       draw_flexwintitle,      click_flexwintitle,      NULL,                    "flexwintitle" },
+	{ -1,        0,     BAR_ALIGN_NONE,   width_bartabgroups,       draw_bartabgroups,      click_bartabgroups,      NULL,                    "bartabgroups" },
 };
 
 /* layout(s) */

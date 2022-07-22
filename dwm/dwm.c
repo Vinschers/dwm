@@ -44,7 +44,6 @@
 #include "drw.h"
 #include "util.h"
 
-#define FLEXTILE_DELUXE_LAYOUT 1
 
 
 
@@ -90,39 +89,6 @@ enum {
 	SchemeHidNorm,
 	SchemeHidSel,
 	SchemeUrg,
-	SchemeFlexActTTB,
-	SchemeFlexActLTR,
-	SchemeFlexActMONO,
-	SchemeFlexActGRID,
-	SchemeFlexActGRD1,
-	SchemeFlexActGRD2,
-	SchemeFlexActGRDM,
-	SchemeFlexActHGRD,
-	SchemeFlexActDWDL,
-	SchemeFlexActSPRL,
-	SchemeFlexInaTTB,
-	SchemeFlexInaLTR,
-	SchemeFlexInaMONO,
-	SchemeFlexInaGRID,
-	SchemeFlexInaGRD1,
-	SchemeFlexInaGRD2,
-	SchemeFlexInaGRDM,
-	SchemeFlexInaHGRD,
-	SchemeFlexInaDWDL,
-	SchemeFlexInaSPRL,
-	SchemeFlexSelTTB,
-	SchemeFlexSelLTR,
-	SchemeFlexSelMONO,
-	SchemeFlexSelGRID,
-	SchemeFlexSelGRD1,
-	SchemeFlexSelGRD2,
-	SchemeFlexSelGRDM,
-	SchemeFlexSelHGRD,
-	SchemeFlexSelDWDL,
-	SchemeFlexSelSPRL,
-	SchemeFlexActFloat,
-	SchemeFlexInaFloat,
-	SchemeFlexSelFloat,
 }; /* color schemes */
 
 enum {
@@ -943,7 +909,7 @@ createmon(void)
 	m->gappov = gappov;
 	for (mi = 0, mon = mons; mon; mon = mon->next, mi++); // monitor index
 	m->num = mi;
-    m->lt[0] = &layouts[0];
+	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 
@@ -1067,6 +1033,7 @@ drawbar(Monitor *m)
 {
 	Bar *bar;
 	
+	if (m->showbar)
 		for (bar = m->bar; bar; bar = bar->next)
 			drawbarwin(bar);
 }
@@ -1245,7 +1212,10 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-        XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel); /* CHANGED: not sure */
+		if (c->isfloating)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
+		else
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1520,6 +1490,10 @@ manage(Window w, XWindowAttributes *wa)
 
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
+	if (c->isfloating)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
+	else
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
 	configure(c); /* propagates border_width, if size doesn't change */
 	updatesizehints(c);
 	if (getatomprop(c, netatom[NetWMState], XA_ATOM) == netatom[NetWMFullscreen])
@@ -2321,6 +2295,10 @@ togglefloating(const Arg *arg)
 	if (c->isfullscreen) /* no support for fullscreen windows */
 		return;
 	c->isfloating = !c->isfloating || c->isfixed;
+	if (c->isfloating)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
+	else
+		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 	if (c->isfloating) {
 		if (c->sfx != -9999) {
 			/* restore last known float dimensions */
@@ -2393,6 +2371,10 @@ unfocus(Client *c, int setfocus, Client *nextfocus)
 	if (!c)
 		return;
 	grabbuttons(c, 0);
+	if (c->isfloating)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColFloat].pixel);
+	else
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColBorder].pixel);
 	if (setfocus) {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
