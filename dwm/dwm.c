@@ -395,8 +395,6 @@ static void unmapnotify(XEvent *e);
 static void updatebarpos(Monitor *m);
 static void updatebars(void);
 static void updateclientlist(void);
-/* CHANGED: default layouts */
-static Bool updatedefaultlayout(void);
 static int updategeom(void);
 static void updatenumlockmask(void);
 static void updatesizehints(Client *c);
@@ -598,14 +596,11 @@ arrangemon(Monitor *m)
 		m->lt[m->sellt]->arrange(m);
 }
 
-/* CHANGED: default layouts */
 void
 attach(Client *c)
 {
 	c->next = c->mon->clients;
 	c->mon->clients = c;
-
-    updatedefaultlayout();
 }
 
 void
@@ -948,8 +943,7 @@ createmon(void)
 	m->gappov = gappov;
 	for (mi = 0, mon = mons; mon; mon = mon->next, mi++); // monitor index
 	m->num = mi;
-    /* CHANGED: default layouts */
-    m->lt[0] = &layouts[defaultlayouts[0]];
+    m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 
@@ -1028,7 +1022,6 @@ destroynotify(XEvent *e)
 	}
 }
 
-/* CHANGED: default layouts */
 void
 detach(Client *c)
 {
@@ -1037,8 +1030,6 @@ detach(Client *c)
 	for (tc = &c->mon->clients; *tc && *tc != c; tc = &(*tc)->next);
 	*tc = c->next;
 	c->next = NULL;
-
-    updatedefaultlayout();
 }
 
 void
@@ -2258,34 +2249,6 @@ sigchld(int unused)
 	while (0 < waitpid(-1, NULL, WNOHANG));
 }
 
-/* CHANGED: default layouts */
-Bool
-updatedefaultlayout()
-{
-    /*
-    unsigned short clients = 0;
-    Client *c;
-    Layout *newlayout;
-    Arg layoutarg;
-
-    for(clients = 0, c = nexttiled(selmon->clients); c; c = nexttiled(c->next), ++clients) {}
-
-    if (clients >= LENGTH(defaultlayouts))
-        clients = LENGTH(defaultlayouts) - 1;
-
-    newlayout = (Layout *)&layouts[defaultlayouts[clients]];
-
-    if (selmon->lt[selmon->sellt] != newlayout)
-    {
-        layoutarg.v = newlayout;
-        setlayout(&layoutarg);
-        return False;
-    }
-
-    return True;
-    */
-}
-
 void
 spawn(const Arg *arg)
 {
@@ -2305,7 +2268,6 @@ spawn(const Arg *arg)
 	}
 }
 
-/* CHANGED: default layouts */
 void
 tag(const Arg *arg)
 {
@@ -2316,12 +2278,9 @@ tag(const Arg *arg)
 		arrange(selmon);
 		if ((arg->ui & TAGMASK) != selmon->tagset[selmon->seltags])
 			view(arg);
-
-        updatedefaultlayout();
 	}
 }
 
-/* CHANGED: default layouts */
 void
 tagmon(const Arg *arg)
 {
@@ -2331,8 +2290,6 @@ tagmon(const Arg *arg)
 		return;
 	dest = dirtomon(arg->i);
 	sendmon(c, dest);
-
-    updatedefaultlayout();
 }
 
 /* CHANGED: togglebar applies to all monitors */

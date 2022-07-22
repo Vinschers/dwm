@@ -45,7 +45,7 @@ drawstatusbar(BarArg *a, char* stext)
 
 			text[i] = '\0';
 			w = TEXTWM(text) - lrpad;
-			drw_text(drw, x, y, w, bh, 0, text, 0, True);
+			drw_text(drw, x, y + vertpadbar/2, w, bh - vertpadbar, 0, text, 0, True);
 
 			x += w;
 
@@ -117,7 +117,7 @@ drawstatusbar(BarArg *a, char* stext)
 	}
 	if (!isCode && len > 0) {
 		w = TEXTWM(text) - lrpad;
-		drw_text(drw, x, y, w, bh, 0, text, 0, True);
+		drw_text(drw, x, y + vertpadbar/2, w, bh - vertpadbar, 0, text, 0, True);
 		x += w;
 	}
 	free(p);
