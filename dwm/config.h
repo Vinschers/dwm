@@ -20,12 +20,12 @@ static const int topbar                 = 1;        /* 0 means bottom bar */
 
 #define ICONSIZE 15    /* icon size */
 #define ICONSPACING 5  /* space between icon and title */
-#define FLEXWINTITLE_BORDERS 0       // 0 = off, 1 = on
+#define BARTAB_BORDERS 0       // 0 = off, 1 = on
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = -1;
 static const int horizpadbar             = 0;   /* horizontal padding for statusbar */
-static const int vertpadbar              = 4;   /* vertical padding for statusbar */
+static const int vertpadbar              = 6;   /* vertical padding for statusbar */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
 static const unsigned int ulinepad       = 5;   /* horizontal padding between the underline and tag */
@@ -70,6 +70,7 @@ static char occupiedicons[][3][50] = {
 	{ "neovim",		    "",    "#019833" },
     { "htop",           "",    "#BA9FD7" },
     { "gtop",           "",    "#BA9FD7" },
+	{ "pdf", 		    "",    "#DC1D00" },
 	{ "zathura", 		"",    "#DC1D00" },
 	{ "okular", 		"",    "#DC1D00" },
 	{ "sxiv", 		    "",    "" },
@@ -108,6 +109,7 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
+    RULE(.class = "Chromium", .tags = 1 << 8, .monitor = 1)
 };
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as
@@ -217,6 +219,8 @@ static const char *termcmd[]  = { "st", NULL };
 
 static Key keys[] = {
 	/* modifier                     key            function                argument */
+	{ ALTKEY,                       CAPSKEY,       spawn,                  SHCMD("update_dwmblocks 5") },
+
 	{ MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } },
 	{ MODKEY|ShiftMask,             KP_ENTER,      spawn,                  {.v = termcmd } },
@@ -235,8 +239,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return,     zoom,                   {0} },
 	{ MODKEY|Mod4Mask,              XK_u,          incrgaps,               {.i = +1 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_u,          incrgaps,               {.i = -1 } },
-	{ MODKEY|Mod4Mask,              XK_i,          incrigaps,              {.i = +1 } },
-	{ MODKEY|Mod4Mask|ShiftMask,    XK_i,          incrigaps,              {.i = -1 } },
+	{ MODKEY|ALTKEY,                XK_i,          incrigaps,              {.i = +1 } },
+	{ MODKEY|ALTKEY|ShiftMask,      XK_i,          incrigaps,              {.i = -1 } },
 	{ MODKEY|Mod4Mask,              XK_o,          incrogaps,              {.i = +1 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_o,          incrogaps,              {.i = -1 } },
 	{ MODKEY|Mod4Mask,              XK_6,          incrihgaps,             {.i = +1 } },
@@ -278,19 +282,6 @@ static Key keys[] = {
 	{ ALTKEY,                       XK_k, 				focusmon,          {.i = +1 } },
 	{ ALTKEY|ShiftMask,             XK_j,	  			tagmon,            {.i = -1 } },
 	{ ALTKEY|ShiftMask,             XK_k, 				tagmon,            {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_t|XK_h,  		spawn,             SHICMD("htop") },
-	{ ShiftMask,           		    XK_Print,  			spawn,             SHCMD("flameshot gui") },
-	{ MODKEY|ShiftMask,             XK_e,      			spawn,             SHCMD("select_emoji") },
-	{ MODKEY|ShiftMask,             XK_m,      			spawn,             SHCMD("select_math") },
-	{ MODKEY|ShiftMask,             XK_p,      			spawn,             SHCMD("simple-scan") },
-	{ MODKEY|ShiftMask,             XK_b,      			spawn,             SHCMD("xdg-open localhost:5000") },
-	{ MODKEY|ShiftMask,             XK_t,      			spawn,             SHCMD("latex2img") },
-	{ MODKEY|ShiftMask,             XK_equal,  			spawn,             SHCMD("increase_volume") },
-	{ MODKEY|ShiftMask,             XK_minus,  			spawn,             SHCMD("decrease_volume") },
-	{ MODKEY|ShiftMask,             XK_w,     			spawn,             SHCMD("webcam") },
-	{ MODKEY|ControlMask,           XK_c,	  			spawn,             SHCMD("select_color") },
-	{ ALTKEY,           		    CAPSKEY,	  		spawn,             SHCMD("update_dwmblocks 5") },
-	{ ControlMask|ALTKEY,           XK_Delete,	  		spawn,             SHCMD("lock") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
